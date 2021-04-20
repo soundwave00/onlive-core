@@ -1,0 +1,26 @@
+[Unit]
+Description=Jamulus-Server
+After=network.target
+
+[Service]
+Type=simple
+User=jamulus
+Group=nogroup
+NoNewPrivileges=true
+ProtectSystem=true
+ProtectHome=true
+Nice=-20
+IOSchedulingClass=realtime
+IOSchedulingPriority=0
+
+#### Comando di esecuzione ####
+ExecStart=/usr/local/bin/jamulus/Jamulus -s -n -F -T --streamto "-f mp3 icecast://source:root@localhost:8000/stream"
+
+Restart=on-failure
+RestartSec=30
+StandardOutput=journal
+StandardError=inherit
+SyslogIdentifier=jamulus
+
+[Install]
+WantedBy=multi-user.target
