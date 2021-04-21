@@ -25,21 +25,9 @@ namespace onlive_core.Controllers
         public string prova()
         {
             launchProcess("gnome-terminal");
+            //launchProcess("\"/home/riddorck/sviluppi/jamulus/Jamulus -s -n -F -T --streamto '-f mp3 icecast://source:root@localhost:80/stream\'\"");
 
-            //"-c /home/riddorck/sviluppi/jamulus/Jamulus -s -n -F -T --streamto \"-f mp3 icecast://source:root@localhost:80/stream\""
-
-            /*
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
-            */
-
-            return "!ciao";
+            return "prova";
         }
 
         public static void launchProcess(string cmdInput)
@@ -50,18 +38,9 @@ namespace onlive_core.Controllers
             process.StartInfo.FileName = "/bin/bash";
             process.StartInfo.Arguments = command;
             process.StartInfo.UseShellExecute = false;
-            //process.StartInfo.RedirectStandardOutput = true;
-            //process.StartInfo.CreateNoWindow = true;
             process.Start();
-            Console.WriteLine(command);
 
-            /*
-            while (!process.StandardOutput.EndOfStream)
-            {
-                    string line = process.StandardOutput.ReadLine();
-                    Console.WriteLine(line);
-            }
-            */
+            Console.WriteLine(command);
         }
     }
 }

@@ -1,6 +1,6 @@
 onlive-core
 ==========
-Tesi, creazione di una WebApp per la fruizione online di concerti a distanza
+Tesi, creazione di una WebApp per la fruizione online di concerti a distanza.
 
 ---
 
@@ -48,3 +48,4 @@ Jamulus Server
 	- Script nel repo: jamulus-server/jamulus.service
 - sudo chmod 644 /etc/systemd/system/jamulus.service
 - Avvio: sudo systemctl start jamulus
+- Stop: sudo systemctl stop jamulus
