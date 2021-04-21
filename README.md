@@ -14,7 +14,7 @@ Tesi, creazione di una WebApp per la fruizione online di concerti a distanza
 - sudo apt update
 - sudo apt install -y apt-transport-https
 - sudo apt update
-- sudo apt install -y dotnet-sdk-5.0
+- sudo apt install -y dotnet-sdk-3.1
 
 Jamulus Server
 --------------
