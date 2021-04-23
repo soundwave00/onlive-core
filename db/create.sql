@@ -1,0 +1,8 @@
+CREATE DATABASE "onlive";
+
+CREATE TABLE onlive.LIVE (
+	ID int AUTO_INCREMENT,
+	PID int NOT NULL,
+
+	PRIMARY KEY (ID)
+);
