@@ -15,6 +15,8 @@ namespace onlive_core
 {
     public class Startup
     {
+		readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,7 +27,18 @@ namespace onlive_core
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+			services.AddCors(options =>
+			{
+				options.AddPolicy(name: MyAllowSpecificOrigins,
+					builder =>
+					{
+						builder.WithOrigins("http://localhost:4200")
+							.AllowAnyHeader()
+							.AllowAnyMethod();
+					});
+			});
+
+			services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +52,8 @@ namespace onlive_core
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+			app.UseCors(MyAllowSpecificOrigins);
 
             app.UseAuthorization();
 

@@ -26,7 +26,7 @@ namespace onlive_core.Controllers
 
         #region Metodi
 
-        [HttpGet]
+        [HttpPost]
         [HttpOptions]
         [Route("testLive")]
         public string testLive()
@@ -37,7 +37,7 @@ namespace onlive_core.Controllers
             return response;
         }
 
-        [HttpGet]
+        [HttpPost]
         [HttpOptions]
         [Route("stopAllLive")]
         public string stopAllLive()

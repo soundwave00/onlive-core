@@ -8,6 +8,7 @@ Entity Relationship
 
 ##### Note
 - Le colonne di tipo DATETIME non vengono gestite, da aggiungere a mano.
+
 ###### Esempio
 - Aggiungere le date nel modello
 	- public DateTime DateSet { get; set; }
