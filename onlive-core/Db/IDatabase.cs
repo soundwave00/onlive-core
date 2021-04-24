@@ -1,7 +1,4 @@
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using MySql.Data.MySqlClient;
 
@@ -50,21 +47,6 @@ namespace onlive_core.Db
             {
                 command.Transaction = transaction;
             }
-
-			/*
-            using (SqlConnection connection = this.Open())
-            {
-                if (!connection.State.Equals(ConnectionState.Open))
-                {
-                    throw new Exception(String.Format("ExecuteNonQuery SqlCommand: ", command.CommandText));
-                }
-                command.Connection = connection;
-
-                returnValue = command.ExecuteNonQuery();
-                
-				connection.Close();
-            }
-			*/
 
 			if (!connection.State.Equals(ConnectionState.Open))
 			{

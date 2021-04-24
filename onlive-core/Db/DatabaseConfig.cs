@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
-using System.Data;
 using MySql.Data.MySqlClient;
 
 namespace onlive_core.Db
