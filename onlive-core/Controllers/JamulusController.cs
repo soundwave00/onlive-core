@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using onlive_core.Services;
+using onlive_core.DbModels;
 
 namespace onlive_core.Controllers
 {
@@ -29,10 +31,19 @@ namespace onlive_core.Controllers
         [HttpPost]
         [HttpOptions]
         [Route("testLive")]
-        public string testLive()
+        public string testLive([FromBody]Live req)
         {
-			JamulusService jamulusService = new JamulusService();
-			string response = jamulusService.testLive();
+			string response;
+
+            try
+			{
+				JamulusService jamulusService = new JamulusService();
+				response = jamulusService.testLive(req);
+			}
+            catch (Exception exc)
+            {
+				response = exc.Message;
+            }
 
             return response;
         }
@@ -42,8 +53,17 @@ namespace onlive_core.Controllers
         [Route("stopAllLive")]
         public string stopAllLive()
         {
-			JamulusService jamulusService = new JamulusService();
-			string response = jamulusService.stopAllLive();
+			string response;
+
+            try
+			{
+				JamulusService jamulusService = new JamulusService();
+				response = jamulusService.stopAllLive();
+			}
+            catch (Exception exc)
+            {
+				response = exc.Message;
+            }
 
             return response;
 		}

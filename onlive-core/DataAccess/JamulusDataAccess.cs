@@ -75,13 +75,13 @@ namespace onlive_core.DataAccess
         public List<int> getRunningLive()
         {
 			List<int> pids = new List<int>();
-
-            MySqlCommand command = new MySqlCommand();
-            MySqlDataReader reader = null;
+			MySqlDataReader reader = null;
 
             try
             {
                 InitDB();
+
+				MySqlCommand command = new MySqlCommand();
                 
 				StringBuilder sb = new StringBuilder();
 				sb.AppendFormat(getRunningLiveQuery, Db.DbConfig.ConnectionPrefix);
@@ -102,8 +102,7 @@ namespace onlive_core.DataAccess
             }
             catch (Exception exc)
             {
-				Console.WriteLine("Errore in getRunningLivePid durante il metodo kill: " + exc);
-                //throw new Exception("Errore in getRunningLivePid durante il metodo kill", exc);
+				throw new Exception(exc.Message, exc);
             }
             finally
             {
@@ -121,44 +120,36 @@ namespace onlive_core.DataAccess
         {
 			int id = 0;
 
-			try
+			//TMP CREAZIONE LIVE
+			using (var context = new onliveContext())
 			{
-				//TMP CREAZIONE LIVE
-				using (var context = new onliveContext())
-				{
-					Live live = new Live();
-					live.Name = "Prova";
-					live.Description = "Prova Descrizione";
-					live.DateSet = new DateTime();
-					live.DateStart = null;
-					live.Pid = null;
-					live.Running = false;
+				Live live = new Live();
+				live.Name = "Prova";
+				live.Description = "Prova Descrizione";
+				live.DateSet = new DateTime();
+				live.DateStart = null;
+				live.Pid = null;
+				live.Running = false;
 
-					context.Live.Add(live);
-					context.SaveChanges();
+				context.Live.Add(live);
+				context.SaveChanges();
 
-					id = live.Id;
-				}
-				//TMP CREAZIONE LIVE
+				id = live.Id;
+			}
+			//TMP CREAZIONE LIVE
 
-				using (var context = new onliveContext())
-				{
-					Live live = context.Live
-						.Where(x => x.Id == id)
-						.FirstOrDefault();
-					
-					live.Pid = pid;
-					live.DateStart = new DateTime();
-					live.Running = true;
+			using (var context = new onliveContext())
+			{
+				Live live = context.Live
+					.Where(x => x.Id == id)
+					.FirstOrDefault();
+				
+				live.Pid = pid;
+				live.DateStart = new DateTime();
+				live.Running = true;
 
-					context.SaveChanges();
-				}
-            }
-            catch (Exception exc)
-            {
-				Console.WriteLine("Errore durante il metodo setStartLive: " + exc);
-                //throw new Exception("Errore durante il metodo setStartLive", exc);
-            }
+				context.SaveChanges();
+			}
         }
 
         public void setStopLive(int pid)
@@ -179,12 +170,11 @@ namespace onlive_core.DataAccess
 				DatabaseConfig databaseConfig = new DatabaseConfig();
 				databaseConfig.AddParameterToCommand(command, "@PID", MySqlDbType.Int32, pid);
 
-				Db.ExecuteReader(command);
+				Db.ExecuteNonQuery(command);
             }
             catch (Exception exc)
             {
-				Console.WriteLine("Errore durante il metodo setStopLive: " + exc);
-                //throw new Exception("Errore durante il metodo setStopLive", exc);
+				throw new Exception(exc.Message, exc);
             }
             finally
             {

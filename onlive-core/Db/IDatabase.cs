@@ -43,15 +43,16 @@ namespace onlive_core.Db
         {
             int returnValue = -1;
 
-            if (transaction != null)
-            {
-                command.Transaction = transaction;
-            }
+			if (transaction != null)
+			{
+				command.Transaction = transaction;
+			}
 
 			if (!connection.State.Equals(ConnectionState.Open))
 			{
-				throw new Exception(String.Format("ExecuteNonQuery SqlCommand: ", command.CommandText));
+				throw new Exception("Connection closed");
 			}
+
 			command.Connection = connection;
 			returnValue = command.ExecuteNonQuery();
 
@@ -62,17 +63,18 @@ namespace onlive_core.Db
         {
             MySqlDataReader dr = null;
 
-            if (transaction != null)
-            {
-                command.Transaction = transaction;
-            }
+			if (transaction != null)
+			{
+				command.Transaction = transaction;
+			}
 
-            command.Connection = connection;
-            if (!command.Connection.State.Equals(ConnectionState.Open))
-            {
-                throw new Exception(String.Format("ExecuteReader SqlCommand: ", command.CommandText));
-            }
-            dr = command.ExecuteReader();
+			if (!connection.State.Equals(ConnectionState.Open))
+			{
+				throw new Exception("Connection closed");
+			}
+
+			command.Connection = connection;
+			dr = command.ExecuteReader();
 
             return dr;
         }
