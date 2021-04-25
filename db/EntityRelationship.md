@@ -1,10 +1,11 @@
 Entity Relationship
 -------------------
 ##### Configurazione
+- Entrare nella cartella del progetto
 - Creazione modello:
-	- dotnet ef dbcontext scaffold "SERVER=localhost;DATABASE=onlive;UID=root;PASSWORD=root;" MySql.Data.EntityFrameworkCore -o Models
+	- dotnet ef dbcontext scaffold "SERVER=localhost;DATABASE=onlive;UID=root;PASSWORD=root;" MySql.Data.EntityFrameworkCore -o DbModels
 - Aggiornamento modello
-	- dotnet ef dbcontext scaffold "SERVER=localhost;DATABASE=onlive;UID=root;PASSWORD=root;" MySql.Data.EntityFrameworkCore -o Models -f
+	- dotnet ef dbcontext scaffold "SERVER=localhost;DATABASE=onlive;UID=root;PASSWORD=root;" MySql.Data.EntityFrameworkCore -o DbModels -f
 
 ##### Note
 - Le colonne di tipo DATETIME non vengono gestite, da aggiungere a mano.

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using onlive_core.Services;
 using onlive_core.DbModels;
+using onlive_core.Entities;
 
 namespace onlive_core.Controllers
 {
@@ -30,19 +31,20 @@ namespace onlive_core.Controllers
 
         [HttpPost]
         [HttpOptions]
-        [Route("testLive")]
-        public string testLive([FromBody]Live req)
+        [Route("startLive")]
+        public Response startLive([FromBody]Live req)
         {
-			string response;
+			Response response = new Response();
 
             try
 			{
 				JamulusService jamulusService = new JamulusService();
-				response = jamulusService.testLive(req);
+				//response = jamulusService.startLive(req);
+				response = jamulusService.startLive(req, "vlc");
 			}
             catch (Exception exc)
             {
-				response = exc.Message;
+				response.rMessage = exc.Message;
             }
 
             return response;
@@ -50,10 +52,30 @@ namespace onlive_core.Controllers
 
         [HttpPost]
         [HttpOptions]
-        [Route("stopAllLive")]
-        public string stopAllLive()
+        [Route("stopLive")]
+        public Response stopLive([FromBody]Live req)
         {
-			string response;
+			Response response = new Response();
+
+            try
+			{
+				JamulusService jamulusService = new JamulusService();
+				response = jamulusService.stopLive(req);
+			}
+            catch (Exception exc)
+            {
+				response.rMessage = exc.Message;
+            }
+
+            return response;
+		}
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("stopAllLive")]
+        public Response stopAllLive()
+        {
+			Response response = new Response();
 
             try
 			{
@@ -62,7 +84,7 @@ namespace onlive_core.Controllers
 			}
             catch (Exception exc)
             {
-				response = exc.Message;
+				response.rMessage = exc.Message;
             }
 
             return response;

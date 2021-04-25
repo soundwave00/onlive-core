@@ -19,6 +19,7 @@ namespace onlive_core.DbModels
         {
         }
 
+        public virtual DbSet<Jports> Jports { get; set; }
         public virtual DbSet<Live> Live { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -31,9 +32,26 @@ namespace onlive_core.DbModels
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Jports>(entity =>
+            {
+                entity.HasKey(e => e.Port)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("JPORTS");
+
+                entity.Property(e => e.Port).HasColumnName("PORT");
+
+                entity.Property(e => e.Running)
+                    .HasColumnName("RUNNING")
+                    .HasColumnType("bit(1)");
+            });
+
             modelBuilder.Entity<Live>(entity =>
             {
                 entity.ToTable("LIVE");
+
+                entity.HasIndex(e => e.Port)
+                    .HasName("FK_JPORTS_LIVE");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -47,6 +65,14 @@ namespace onlive_core.DbModels
                     .HasColumnName("NAME")
                     .HasMaxLength(64);
 
+                entity.Property(e => e.Pid).HasColumnName("PID");
+
+                entity.Property(e => e.Port).HasColumnName("PORT");
+
+                entity.Property(e => e.Running)
+                    .HasColumnName("RUNNING")
+                    .HasColumnType("bit(1)");
+				
 				entity.Property(e => e.DateSet)
 					.IsRequired()
 					.HasColumnName("DATE_SET")
@@ -60,11 +86,10 @@ namespace onlive_core.DbModels
 					.HasColumnName("DATE_STOP")
 					.HasColumnType("datetime");
 
-                entity.Property(e => e.Pid).HasColumnName("PID");
-
-                entity.Property(e => e.Running)
-                    .HasColumnName("RUNNING")
-                    .HasColumnType("bit(1)");
+                entity.HasOne(d => d.PortNavigation)
+                    .WithMany(p => p.Live)
+                    .HasForeignKey(d => d.Port)
+                    .HasConstraintName("FK_JPORTS_LIVE");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -20,17 +20,9 @@ namespace onlive_core.DataAccess
 
 		#region SQL Command Source
 
-		private const String setStartLiveQuery = @"
-			UPDATE {0}LIVE 
-			SET
-				PID = @PID,
-				DATE_START = NOW(),
-				RUNNING = 1
-			WHERE ID = @ID
-		";
-
 		private const String getRunningLiveQuery = @"
-			SELECT PID FROM {0}LIVE
+			SELECT *
+			FROM {0}LIVE
 			WHERE RUNNING = 1
 		";
 		
@@ -39,12 +31,12 @@ namespace onlive_core.DataAccess
 			SET
 				RUNNING = 0,
 				DATE_STOP = NOW()
-			WHERE PID = @PID
+			WHERE ID = @ID
 		";
 
 		#endregion
 
-		#region InitDB
+		#region DB
 
         private void InitDB()
         {
@@ -54,10 +46,6 @@ namespace onlive_core.DataAccess
                 Db.Open();
             }
         }
-
-        #endregion
-
-        #region ReleseDB
 
         private void ReleseDB()
         {
@@ -72,10 +60,24 @@ namespace onlive_core.DataAccess
 
         #region Metodi
 
-        public List<int> getRunningLive()
+        public Live getLiveById(int liveId)
         {
-			List<int> pids = new List<int>();
+			Live live = new Live();
+
+			using (var context = new onliveContext())
+			{
+				live = context.Live
+					.Where(x => x.Id == liveId)
+					.FirstOrDefault();
+			}
+
+            return live;
+		}
+
+        public List<Live> getRunningLive()
+        {
 			MySqlDataReader reader = null;
+			List<Live> lstLive = new List<Live>();
 
             try
             {
@@ -95,8 +97,19 @@ namespace onlive_core.DataAccess
 				{
 					while (reader.Read())
 					{
-						int pid = reader.GetInt32(reader.GetOrdinal("PID"));
-						pids.Add(pid);
+						Live live = new Live();
+
+						live.Id = reader.GetInt32(reader.GetOrdinal("ID"));
+						live.Name = reader.GetString(reader.GetOrdinal("NAME"));
+						live.Description = reader.GetString(reader.GetOrdinal("DESCRIPTION"));
+						live.DateSet = reader.GetDateTime(reader.GetOrdinal("DATE_SET"));
+						live.Running = reader.GetBoolean(reader.GetOrdinal("RUNNING"));
+						if(!reader.IsDBNull(reader.GetOrdinal("PID"))) live.Pid = reader.GetInt32(reader.GetOrdinal("PID"));
+						if(!reader.IsDBNull(reader.GetOrdinal("PORT"))) live.Port = reader.GetInt32(reader.GetOrdinal("PORT"));
+						if(!reader.IsDBNull(reader.GetOrdinal("DATE_START"))) live.DateStart = reader.GetDateTime(reader.GetOrdinal("DATE_START"));
+						if(!reader.IsDBNull(reader.GetOrdinal("DATE_STOP"))) live.DateStop = reader.GetDateTime(reader.GetOrdinal("DATE_STOP"));
+
+						lstLive.Add(live);
 					}
 				}
             }
@@ -113,46 +126,92 @@ namespace onlive_core.DataAccess
                 ReleseDB();
             }
 
-            return pids;
+            return lstLive;
 		}
 
-        public void setStartLive(int pid)
+        public Live createLive(Live live)
         {
-			int id = 0;
+			Live insLive = new Live();
 
-			//TMP CREAZIONE LIVE
 			using (var context = new onliveContext())
 			{
-				Live live = new Live();
-				live.Name = "Prova";
-				live.Description = "Prova Descrizione";
-				live.DateSet = new DateTime();
-				live.DateStart = null;
-				live.Pid = null;
-				live.Running = false;
+				insLive.Name = live.Name;
+				insLive.Description = live.Description;
+				insLive.DateSet = live.DateSet;
 
-				context.Live.Add(live);
+				context.Live.Add(insLive);
+				context.SaveChanges();
+			}
+
+			return insLive;
+        }
+
+        public int calculatePort()
+        {
+			int port = -1;
+
+			using (var context = new onliveContext())
+			{
+				Jports jports = context.Jports
+					.Where(x => x.Running == false)
+					.FirstOrDefault();
+
+				jports.Running = true;
 				context.SaveChanges();
 
-				id = live.Id;
+				port = jports.Port;
 			}
-			//TMP CREAZIONE LIVE
 
+			return port;
+        }
+
+        public void freePort(int liveId)
+        {
 			using (var context = new onliveContext())
 			{
 				Live live = context.Live
-					.Where(x => x.Id == id)
+					.Where(x => x.Id == liveId)
+					.FirstOrDefault();
+
+				Jports jports = context.Jports
+					.Where(x => x.Port == live.Port)
+					.FirstOrDefault();
+
+				jports.Running = false;
+				context.SaveChanges();
+			}
+        }
+
+        public void setPort(int liveId, int port)
+        {
+			using (var context = new onliveContext())
+			{
+				Live updlive = context.Live
+					.Where(x => x.Id == liveId)
+					.FirstOrDefault();
+
+				updlive.Port = port;
+				context.SaveChanges();
+			}
+        }
+
+        public void setStartLive(int liveId, int pid)
+        {
+			using (var context = new onliveContext())
+			{
+				Live updLive = context.Live
+					.Where(x => x.Id == liveId)
 					.FirstOrDefault();
 				
-				live.Pid = pid;
-				live.DateStart = new DateTime();
-				live.Running = true;
+				updLive.Pid = pid;
+				updLive.DateStart = DateTime.Now;
+				updLive.Running = true;
 
 				context.SaveChanges();
 			}
         }
 
-        public void setStopLive(int pid)
+        public void setStopLive(int liveId)
         {
 			try
 			{
@@ -168,7 +227,7 @@ namespace onlive_core.DataAccess
 				command.CommandText = commandText;
 				
 				DatabaseConfig databaseConfig = new DatabaseConfig();
-				databaseConfig.AddParameterToCommand(command, "@PID", MySqlDbType.Int32, pid);
+				databaseConfig.AddParameterToCommand(command, "@ID", MySqlDbType.Int32, liveId);
 
 				Db.ExecuteNonQuery(command);
             }

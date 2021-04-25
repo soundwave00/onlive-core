@@ -10,12 +10,15 @@ namespace onlive_core.DbModels
     public partial class Live
     {
         public int Id { get; set; }
-        public int? Pid { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int? Pid { get; set; }
+        public int? Port { get; set; }
         public bool Running { get; set; }
 		public DateTime DateSet { get; set; }
 		public DateTime? DateStart { get; set; }
 		public DateTime? DateStop { get; set; }
+
+        public virtual Jports PortNavigation { get; set; }
     }
 }
