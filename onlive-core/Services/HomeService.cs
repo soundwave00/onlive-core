@@ -10,75 +10,75 @@ using onlive_core.Entities;
 
 namespace onlive_core.Services
 {
-    public class JamulusService
+    public class HomeService
     {
         #region Metodi pubblici
 
-        public Response startLive(Live req, string bash = null)
+        public Response startEvent(Events req, string bash = null)
         {
 			Response response = new Response();
 
 			//CHECK SESSION(?)
 			/* */
 
-			JamulusDataAccess jamulusDataAccess = new JamulusDataAccess();
+			HomeDataAccess homeDataAccess = new HomeDataAccess();
 
-			//TMP CREATE LIVE
-			Live live = jamulusDataAccess.createLive(req);
+			//TMP CREATE EVENT
+			Events eventItem = homeDataAccess.createEvent(req);
 			
-			int port = setPort(live.Id);
+			int port = setPort(eventItem.Id);
 
-			int pid = startJamulusProcess(port, bash);
+			int pid = startHomeProcess(port, bash);
 			
-			jamulusDataAccess.setStartLive(live.Id, pid);
+			homeDataAccess.setStartEvent(eventItem.Id, pid);
 
-			response.rMessage = "Live " + live.Name + " started";
+			response.rMessage = "Event " + eventItem.Name + " started";
 
 			return response;
         }
 		
-        public Response stopLive(Live req)
+        public Response stopEvent(Events req)
         {
 			Response response = new Response();
 
-			JamulusDataAccess jamulusDataAccess = new JamulusDataAccess();
-			Live live = jamulusDataAccess.getLiveById(req.Id);
+			HomeDataAccess homeDataAccess = new HomeDataAccess();
+			Events eventItem = homeDataAccess.getEventById(req.Id);
 
 			try
 			{
-				stopJamulusProcess((int)live.Pid);
+				stopHomeProcess((int)eventItem.Pid);
 			}
 			catch (Exception exc) {}
 
-			jamulusDataAccess.setStopLive(req.Id);
+			homeDataAccess.setStopEvent(req.Id);
 
-			jamulusDataAccess.freePort(req.Id);
+			homeDataAccess.freePort(req.Id);
 
-			response.rMessage = "Live " + live.Name + " stopped";
+			response.rMessage = "Event " + eventItem.Name + " stopped";
 
             return response;
 		}
 		
-        public Response stopAllLive()
+        public Response stopAllEvents()
         {
 			Response response = new Response();
 
-			JamulusDataAccess jamulusDataAccess = new JamulusDataAccess();
-			List<Live> lstLive = jamulusDataAccess.getRunningLive();
+			HomeDataAccess homeDataAccess = new HomeDataAccess();
+			List<Events> eventLst = homeDataAccess.getRunningEvents();
 
-			foreach(Live live in lstLive){
+			foreach(Events eventItem in eventLst){
 				try
 				{
-					stopJamulusProcess((int)live.Pid);
+					stopHomeProcess((int)eventItem.Pid);
 				}
 				catch (Exception exc) {}
 
-				jamulusDataAccess.setStopLive(live.Id);
+				homeDataAccess.setStopEvent(eventItem.Id);
 
-				jamulusDataAccess.freePort(live.Id);
+				homeDataAccess.freePort(eventItem.Id);
 			}
 
-			response.rMessage = "All live stopped";
+			response.rMessage = "All event stopped";
 
             return response;
 		}
@@ -87,22 +87,22 @@ namespace onlive_core.Services
 
 		#region Metodi privati
 
-        public int setPort(int liveId)
+        public int setPort(int eventId)
         {
 			int port = -1;
 
-			JamulusDataAccess jamulusDataAccess = new JamulusDataAccess();
-			port = jamulusDataAccess.calculatePort();
+			HomeDataAccess homeDataAccess = new HomeDataAccess();
+			port = homeDataAccess.calculatePort();
 
 			if (port < 0)
 				throw new Exception("Port not found");
 
-			jamulusDataAccess.setPort(liveId, port);
+			homeDataAccess.setPort(eventId, port);
 
 			return port;
 		}
 
-		public int startJamulusProcess(int port, string bash)
+		public int startHomeProcess(int port, string bash)
 		{
 			string command = "/home/riddorck/sviluppi/jamulus/Jamulus -s -n -F -T --streamto {PORT} '-f mp3 icecast://source:root@localhost:80/stream'";
 			if (!string.IsNullOrEmpty(bash))
@@ -130,7 +130,7 @@ namespace onlive_core.Services
 			return pid;
 		}
 
-        public void stopJamulusProcess(int pid)
+        public void stopHomeProcess(int pid)
         {
 			Process process = Process.GetProcessById(pid);
 			process.Kill();

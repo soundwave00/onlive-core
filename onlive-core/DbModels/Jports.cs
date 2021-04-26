@@ -11,12 +11,12 @@ namespace onlive_core.DbModels
     {
         public Jports()
         {
-            Live = new HashSet<Live>();
+            Events = new HashSet<Events>();
         }
 
         public int Port { get; set; }
         public bool Running { get; set; }
 
-        public virtual ICollection<Live> Live { get; set; }
+        public virtual ICollection<Events> Events { get; set; }
     }
 }

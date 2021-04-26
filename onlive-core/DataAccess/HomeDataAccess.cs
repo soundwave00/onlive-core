@@ -10,7 +10,7 @@ using onlive_core.DbModels;
 
 namespace onlive_core.DataAccess
 {
-    public class JamulusDataAccess
+    public class HomeDataAccess
     {
 		#region Proprietà
 
@@ -20,14 +20,14 @@ namespace onlive_core.DataAccess
 
 		#region SQL Command Source
 
-		private const String getRunningLiveQuery = @"
+		private const String getRunningEventsQuery = @"
 			SELECT *
-			FROM {0}LIVE
+			FROM {0}EVENTS
 			WHERE RUNNING = 1
 		";
 		
-		private const String setStopLiveQuery = @"
-			UPDATE {0}LIVE
+		private const String setStopEventQuery = @"
+			UPDATE {0}EVENTS
 			SET
 				RUNNING = 0,
 				DATE_STOP = NOW()
@@ -60,24 +60,24 @@ namespace onlive_core.DataAccess
 
         #region Metodi
 
-        public Live getLiveById(int liveId)
+        public Events getEventById(int eventId)
         {
-			Live live = new Live();
+			Events eventItem = new Events();
 
 			using (var context = new onliveContext())
 			{
-				live = context.Live
-					.Where(x => x.Id == liveId)
+				eventItem = context.Events
+					.Where(x => x.Id == eventId)
 					.FirstOrDefault();
 			}
 
-            return live;
+            return eventItem;
 		}
 
-        public List<Live> getRunningLive()
+        public List<Events> getRunningEvents()
         {
 			MySqlDataReader reader = null;
-			List<Live> lstLive = new List<Live>();
+			List<Events> eventLst = new List<Events>();
 
             try
             {
@@ -86,7 +86,7 @@ namespace onlive_core.DataAccess
 				MySqlCommand command = new MySqlCommand();
                 
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat(getRunningLiveQuery, Db.DbConfig.ConnectionPrefix);
+				sb.AppendFormat(getRunningEventsQuery, Db.DbConfig.ConnectionPrefix);
 
 				String commandText = sb.ToString();
 				command.CommandType = System.Data.CommandType.Text;
@@ -97,19 +97,19 @@ namespace onlive_core.DataAccess
 				{
 					while (reader.Read())
 					{
-						Live live = new Live();
+						Events eventItem = new Events();
 
-						live.Id = reader.GetInt32(reader.GetOrdinal("ID"));
-						live.Name = reader.GetString(reader.GetOrdinal("NAME"));
-						live.Description = reader.GetString(reader.GetOrdinal("DESCRIPTION"));
-						live.DateSet = reader.GetDateTime(reader.GetOrdinal("DATE_SET"));
-						live.Running = reader.GetBoolean(reader.GetOrdinal("RUNNING"));
-						if(!reader.IsDBNull(reader.GetOrdinal("PID"))) live.Pid = reader.GetInt32(reader.GetOrdinal("PID"));
-						if(!reader.IsDBNull(reader.GetOrdinal("PORT"))) live.Port = reader.GetInt32(reader.GetOrdinal("PORT"));
-						if(!reader.IsDBNull(reader.GetOrdinal("DATE_START"))) live.DateStart = reader.GetDateTime(reader.GetOrdinal("DATE_START"));
-						if(!reader.IsDBNull(reader.GetOrdinal("DATE_STOP"))) live.DateStop = reader.GetDateTime(reader.GetOrdinal("DATE_STOP"));
+						eventItem.Id = reader.GetInt32(reader.GetOrdinal("ID"));
+						eventItem.Name = reader.GetString(reader.GetOrdinal("NAME"));
+						eventItem.Description = reader.GetString(reader.GetOrdinal("DESCRIPTION"));
+						eventItem.DateSet = reader.GetDateTime(reader.GetOrdinal("DATE_SET"));
+						eventItem.Running = reader.GetBoolean(reader.GetOrdinal("RUNNING"));
+						if(!reader.IsDBNull(reader.GetOrdinal("PID"))) eventItem.Pid = reader.GetInt32(reader.GetOrdinal("PID"));
+						if(!reader.IsDBNull(reader.GetOrdinal("PORT"))) eventItem.Port = reader.GetInt32(reader.GetOrdinal("PORT"));
+						if(!reader.IsDBNull(reader.GetOrdinal("DATE_START"))) eventItem.DateStart = reader.GetDateTime(reader.GetOrdinal("DATE_START"));
+						if(!reader.IsDBNull(reader.GetOrdinal("DATE_STOP"))) eventItem.DateStop = reader.GetDateTime(reader.GetOrdinal("DATE_STOP"));
 
-						lstLive.Add(live);
+						eventLst.Add(eventItem);
 					}
 				}
             }
@@ -126,24 +126,24 @@ namespace onlive_core.DataAccess
                 ReleseDB();
             }
 
-            return lstLive;
+            return eventLst;
 		}
 
-        public Live createLive(Live live)
+        public Events createEvent(Events eventItem)
         {
-			Live insLive = new Live();
+			Events insEvent = new Events();
 
 			using (var context = new onliveContext())
 			{
-				insLive.Name = live.Name;
-				insLive.Description = live.Description;
-				insLive.DateSet = live.DateSet;
+				insEvent.Name = eventItem.Name;
+				insEvent.Description = eventItem.Description;
+				insEvent.DateSet = eventItem.DateSet;
 
-				context.Live.Add(insLive);
+				context.Events.Add(insEvent);
 				context.SaveChanges();
 			}
 
-			return insLive;
+			return insEvent;
         }
 
         public int calculatePort()
@@ -165,16 +165,16 @@ namespace onlive_core.DataAccess
 			return port;
         }
 
-        public void freePort(int liveId)
+        public void freePort(int eventId)
         {
 			using (var context = new onliveContext())
 			{
-				Live live = context.Live
-					.Where(x => x.Id == liveId)
+				Events eventItem = context.Events
+					.Where(x => x.Id == eventId)
 					.FirstOrDefault();
 
 				Jports jports = context.Jports
-					.Where(x => x.Port == live.Port)
+					.Where(x => x.Port == eventItem.Port)
 					.FirstOrDefault();
 
 				jports.Running = false;
@@ -182,36 +182,36 @@ namespace onlive_core.DataAccess
 			}
         }
 
-        public void setPort(int liveId, int port)
+        public void setPort(int eventId, int port)
         {
 			using (var context = new onliveContext())
 			{
-				Live updlive = context.Live
-					.Where(x => x.Id == liveId)
+				Events updevent = context.Events
+					.Where(x => x.Id == eventId)
 					.FirstOrDefault();
 
-				updlive.Port = port;
+				updevent.Port = port;
 				context.SaveChanges();
 			}
         }
 
-        public void setStartLive(int liveId, int pid)
+        public void setStartEvent(int eventId, int pid)
         {
 			using (var context = new onliveContext())
 			{
-				Live updLive = context.Live
-					.Where(x => x.Id == liveId)
+				Events updEvent = context.Events
+					.Where(x => x.Id == eventId)
 					.FirstOrDefault();
 				
-				updLive.Pid = pid;
-				updLive.DateStart = DateTime.Now;
-				updLive.Running = true;
+				updEvent.Pid = pid;
+				updEvent.DateStart = DateTime.Now;
+				updEvent.Running = true;
 
 				context.SaveChanges();
 			}
         }
 
-        public void setStopLive(int liveId)
+        public void setStopEvent(int eventId)
         {
 			try
 			{
@@ -220,14 +220,14 @@ namespace onlive_core.DataAccess
                 InitDB();
                 
 				StringBuilder sb = new StringBuilder();
-				sb.AppendFormat(setStopLiveQuery, Db.DbConfig.ConnectionPrefix);
+				sb.AppendFormat(setStopEventQuery, Db.DbConfig.ConnectionPrefix);
 
 				String commandText = sb.ToString();
 				command.CommandType = System.Data.CommandType.Text;
 				command.CommandText = commandText;
 				
 				DatabaseConfig databaseConfig = new DatabaseConfig();
-				databaseConfig.AddParameterToCommand(command, "@ID", MySqlDbType.Int32, liveId);
+				databaseConfig.AddParameterToCommand(command, "@ID", MySqlDbType.Int32, eventId);
 
 				Db.ExecuteNonQuery(command);
             }

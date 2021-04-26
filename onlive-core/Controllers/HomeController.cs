@@ -9,18 +9,18 @@ using onlive_core.Entities;
 namespace onlive_core.Controllers
 {
     [Produces("application/json")]
-    [Route("api/JamulusController")]
-    public class JamulusController
+    [Route("api/HomeController")]
+    public class HomeController
     {
 		#region Proprietà
 
-        private readonly ILogger<JamulusController> _logger;
+        private readonly ILogger<HomeController> _logger;
         
 		#endregion
 				
 		#region Costruttori
 
-        public JamulusController(ILogger<JamulusController> logger)
+        public HomeController(ILogger<HomeController> logger)
         {
         	_logger = logger;
         }
@@ -31,16 +31,16 @@ namespace onlive_core.Controllers
 
         [HttpPost]
         [HttpOptions]
-        [Route("startLive")]
-        public Response startLive([FromBody]Live req)
+        [Route("startEvent")]
+        public Response startEvent([FromBody]Events req)
         {
 			Response response = new Response();
 
             try
 			{
-				JamulusService jamulusService = new JamulusService();
-				//response = jamulusService.startLive(req);
-				response = jamulusService.startLive(req, "vlc");
+				HomeService homeService = new HomeService();
+				//response = HomeService.startEvent(req);
+				response = homeService.startEvent(req, "vlc");
 			}
             catch (Exception exc)
             {
@@ -52,15 +52,15 @@ namespace onlive_core.Controllers
 
         [HttpPost]
         [HttpOptions]
-        [Route("stopLive")]
-        public Response stopLive([FromBody]Live req)
+        [Route("stopEvent")]
+        public Response stopEvent([FromBody]Events req)
         {
 			Response response = new Response();
 
             try
 			{
-				JamulusService jamulusService = new JamulusService();
-				response = jamulusService.stopLive(req);
+				HomeService homeService = new HomeService();
+				response = homeService.stopEvent(req);
 			}
             catch (Exception exc)
             {
@@ -72,15 +72,15 @@ namespace onlive_core.Controllers
 
         [HttpPost]
         [HttpOptions]
-        [Route("stopAllLive")]
-        public Response stopAllLive()
+        [Route("stopAllEvents")]
+        public Response stopAllEvents()
         {
 			Response response = new Response();
 
             try
 			{
-				JamulusService jamulusService = new JamulusService();
-				response = jamulusService.stopAllLive();
+				HomeService homeService = new HomeService();
+				response = homeService.stopAllEvents();
 			}
             catch (Exception exc)
             {

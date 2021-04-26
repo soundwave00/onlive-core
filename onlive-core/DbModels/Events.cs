@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace onlive_core.DbModels
 {
-    public partial class Live
+    public partial class Events
     {
         public int Id { get; set; }
         public string Name { get; set; }

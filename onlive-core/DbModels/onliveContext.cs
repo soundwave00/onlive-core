@@ -20,7 +20,7 @@ namespace onlive_core.DbModels
         }
 
         public virtual DbSet<Jports> Jports { get; set; }
-        public virtual DbSet<Live> Live { get; set; }
+        public virtual DbSet<Events> Events { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -46,12 +46,12 @@ namespace onlive_core.DbModels
                     .HasColumnType("bit(1)");
             });
 
-            modelBuilder.Entity<Live>(entity =>
+            modelBuilder.Entity<Events>(entity =>
             {
-                entity.ToTable("LIVE");
+                entity.ToTable("EVENTS");
 
                 entity.HasIndex(e => e.Port)
-                    .HasName("FK_JPORTS_LIVE");
+                    .HasName("FK_JPORTS_EVENTS");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -87,9 +87,9 @@ namespace onlive_core.DbModels
 					.HasColumnType("datetime");
 
                 entity.HasOne(d => d.PortNavigation)
-                    .WithMany(p => p.Live)
+                    .WithMany(p => p.Events)
                     .HasForeignKey(d => d.Port)
-                    .HasConstraintName("FK_JPORTS_LIVE");
+                    .HasConstraintName("FK_JPORTS_EVENTS");
             });
 
             OnModelCreatingPartial(modelBuilder);
