@@ -118,6 +118,9 @@ namespace onlive_core.Services
             {
                 throw new Exception("Error getting user");
             }
+			
+			if (user == null)
+				throw new Exception("Username does not exist");
 
 			user.Salt = null;
 			user.Password = null;

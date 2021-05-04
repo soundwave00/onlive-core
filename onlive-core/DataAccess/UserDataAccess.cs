@@ -31,6 +31,7 @@ namespace onlive_core.DataAccess
 						Salt = d.Salt
 					})
 					.Where(x => x.Username == username)
+					.Where(x => x.IsActive == true)
 					.FirstOrDefault();
 			}
 
