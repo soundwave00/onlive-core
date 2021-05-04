@@ -15,9 +15,9 @@ namespace onlive_core.DbModels
         public int? Pid { get; set; }
         public int? Port { get; set; }
         public bool Running { get; set; }
-        public DateTime DateSet { get; set; }
-	    public DateTime? DateStart { get; set; }
-        public DateTime? DateStop { get; set; }
+		public DateTime DateSet { get; set; }
+		public DateTime? DateStart { get; set; }
+		public DateTime? DateStop { get; set; }
 
         public virtual Jports PortNavigation { get; set; }
     }

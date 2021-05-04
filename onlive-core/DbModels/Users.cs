@@ -9,14 +9,21 @@ namespace onlive_core.DbModels
 {
     public partial class Users
     {
+        public Users()
+        {
+            Sessions = new HashSet<Sessions>();
+        }
+
         public string Username { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Password { get; set; }
+        public string Salt { get; set; }
         public string Email { get; set; }
-        public string CodiceToken { get; set; }
         public bool IsActive { get; set; }
-        public DateTime DateCreate { get; set; }
-        public DateTime DateDelete { get; set; }
+		public DateTime DateCreate { get; set; }
+		public DateTime? DateDelete { get; set; }
+
+        public virtual ICollection<Sessions> Sessions { get; set; }
     }
 }

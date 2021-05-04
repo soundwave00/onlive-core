@@ -14,47 +14,54 @@ namespace onlive_core.DataAccess
     {
         #region Metodi
 
-		/*
-        public Users login(Request req)
-        {
-			Events eventItem = new Events();
-
-			using (var context = new onliveContext())
-			{
-				eventItem = context.Events
-					.Where(x => x.Id == eventId)
-					.FirstOrDefault();
-			}
-
-            return eventItem;
-		}
-		*/
-
-        public Boolean checkUser(string req)
+        public Users getUser(string username)
         {
 			Users user = new Users();
 
 			using (var context = new onliveContext())
 			{
 				user = context.Users
-					.Where(x => x.Username == req)
+					.Select(d => new Users
+					{
+						Username = d.Username,
+						Name = d.Name,
+						Surname = d.Surname,
+						Email = d.Email,
+						Password = d.Password,
+						Salt = d.Salt
+					})
+					.Where(x => x.Username == username)
 					.FirstOrDefault();
 			}
 
-			if (user != null)
-				return true;
-			else 
-				return false;
+			return user;
         }
 
 		public void signup(Users req)
         {
 			using (var context = new onliveContext())
 			{
-				context.Add(req);
+				context.Users.Add(req);
 				context.SaveChanges();
 			}
         }
+
+        public Sessions openSession(string username, string codiceToken)
+        {
+			Sessions session = new Sessions();
+			session.Username = username;
+			session.CodiceToken = codiceToken;
+			session.DateStart = DateTime.Now;
+			session.DateExp = DateTime.Now.AddDays(7);
+
+			using (var context = new onliveContext())
+			{
+				context.Sessions.Add(session);
+				context.SaveChanges();
+			}
+
+			return session;
+		}
 
 		#endregion
     }

@@ -30,32 +30,31 @@ namespace onlive_core.Controllers
 
         #region Metodi
 
-        /*
         [HttpPost]
         [HttpOptions]
         [Route("login")]
-        public LoginResponse login([FromBody]Request req)
+        public LoginResponse login([FromBody]UserRequest req)
         {
 			LoginResponse response = new LoginResponse();
 
             try
 			{
 				UserService userService = new UserService();
-				response = userService.login(req);
+				response = userService.login(req.user);
 			}
             catch (Exception exc)
             {
+                response.rCode = -1;
 				response.rMessage = exc.Message;
             }
 
             return response;
         }
-        */
 
         [HttpPost]
         [HttpOptions]
         [Route("signup")]
-		public Response signup([FromBody]SignupRequest req)
+		public Response signup([FromBody]UserRequest req)
         {
 			Response response = new Response();
 

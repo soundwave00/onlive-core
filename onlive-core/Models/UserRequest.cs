@@ -3,8 +3,8 @@ using onlive_core.DbModels;
 
 namespace onlive_core.Models
 {
-    public class SignupRequest: Request
+    public class UserRequest: Request
     {
-        public Users user { get; set; }
+		public Users user { get; set; }
     }
 }

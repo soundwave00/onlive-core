@@ -21,14 +21,14 @@ namespace onlive_core.DbModels
 
         public virtual DbSet<Events> Events { get; set; }
         public virtual DbSet<Jports> Jports { get; set; }
+        public virtual DbSet<Sessions> Sessions { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseMySQL("SERVER=localhost;DATABASE=onlive;UID=root;PASSWORD=;");
+                optionsBuilder.UseMySQL("SERVER=localhost;DATABASE=onlive;UID=root;PASSWORD=root;");
             }
         }
 
@@ -41,9 +41,7 @@ namespace onlive_core.DbModels
                 entity.HasIndex(e => e.Port)
                     .HasName("FK_JPORTS_EVENTS");
 
-                entity.Property(e => e.Id)
-                    .HasColumnName("ID")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
@@ -55,32 +53,26 @@ namespace onlive_core.DbModels
                     .HasColumnName("NAME")
                     .HasMaxLength(64);
 
-                entity.Property(e => e.Pid)
-                    .HasColumnName("PID")
-                    .HasColumnType("int(11)")
-                    .HasDefaultValueSql("'NULL'");
+                entity.Property(e => e.Pid).HasColumnName("PID");
 
-                entity.Property(e => e.Port)
-                    .HasColumnName("PORT")
-                    .HasColumnType("int(11)")
-                    .HasDefaultValueSql("'NULL'");
+                entity.Property(e => e.Port).HasColumnName("PORT");
 
                 entity.Property(e => e.Running)
                     .HasColumnName("RUNNING")
                     .HasColumnType("bit(1)");
 
-                entity.Property(e => e.DateSet)
-                    .IsRequired()
-                    .HasColumnName("DATE_SET")
-                    .HasColumnType("datetime");
+				entity.Property(e => e.DateSet)
+					.IsRequired()
+					.HasColumnName("DATE_SET")
+					.HasColumnType("datetime");
 
-                entity.Property(e => e.DateStart)
-                    .HasColumnName("DATE_START")
-                    .HasColumnType("datetime");
+				entity.Property(e => e.DateStart)
+					.HasColumnName("DATE_START")
+					.HasColumnType("datetime");
 
-                entity.Property(e => e.DateStop)
-                    .HasColumnName("DATE_STOP")
-                    .HasColumnType("datetime");
+				entity.Property(e => e.DateStop)
+					.HasColumnName("DATE_STOP")
+					.HasColumnType("datetime");
 
                 entity.HasOne(d => d.PortNavigation)
                     .WithMany(p => p.Events)
@@ -95,13 +87,47 @@ namespace onlive_core.DbModels
 
                 entity.ToTable("JPORTS");
 
-                entity.Property(e => e.Port)
-                    .HasColumnName("PORT")
-                    .HasColumnType("int(11)");
+                entity.Property(e => e.Port).HasColumnName("PORT");
 
                 entity.Property(e => e.Running)
                     .HasColumnName("RUNNING")
                     .HasColumnType("bit(1)");
+            });
+
+            modelBuilder.Entity<Sessions>(entity =>
+            {
+                entity.ToTable("SESSIONS");
+
+                entity.HasIndex(e => e.Username)
+                    .HasName("FK_USERS_SESSIONS");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.CodiceToken)
+                    .IsRequired()
+                    .HasColumnName("CODICE_TOKEN")
+                    .HasMaxLength(16);
+
+                entity.Property(e => e.Username)
+                    .IsRequired()
+                    .HasColumnName("USERNAME")
+                    .HasMaxLength(16);
+
+				entity.Property(e => e.DateStart)
+					.IsRequired()
+					.HasColumnName("DATE_START")
+					.HasColumnType("datetime");
+
+				entity.Property(e => e.DateExp)
+					.IsRequired()
+					.HasColumnName("DATE_EXP")
+					.HasColumnType("datetime");
+
+                entity.HasOne(d => d.UsernameNavigation)
+                    .WithMany(p => p.Sessions)
+                    .HasForeignKey(d => d.Username)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_USERS_SESSIONS");
             });
 
             modelBuilder.Entity<Users>(entity =>
@@ -114,19 +140,6 @@ namespace onlive_core.DbModels
                 entity.Property(e => e.Username)
                     .HasColumnName("USERNAME")
                     .HasMaxLength(16);
-
-                entity.Property(e => e.CodiceToken)
-                    .HasColumnName("CODICE_TOKEN")
-                    .HasMaxLength(16)
-                    .HasDefaultValueSql("'NULL'");
-
-                entity.Property(e => e.DateCreate)
-                    .HasColumnName("DATE_CREATE")
-                    .HasColumnType("date");
-
-                entity.Property(e => e.DateDelete)
-                    .HasColumnName("DATE_DELETE")
-                    .HasColumnType("date");
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -147,10 +160,24 @@ namespace onlive_core.DbModels
                     .HasColumnName("PASSWORD")
                     .HasMaxLength(256);
 
+                entity.Property(e => e.Salt)
+                    .IsRequired()
+                    .HasColumnName("SALT")
+                    .HasMaxLength(16);
+
                 entity.Property(e => e.Surname)
                     .IsRequired()
                     .HasColumnName("SURNAME")
                     .HasMaxLength(32);
+
+				entity.Property(e => e.DateCreate)
+					.IsRequired()
+					.HasColumnName("DATE_CREATE")
+					.HasColumnType("datetime");
+
+				entity.Property(e => e.DateDelete)
+					.HasColumnName("DATE_DELETE")
+					.HasColumnType("datetime");
             });
 
             OnModelCreatingPartial(modelBuilder);
