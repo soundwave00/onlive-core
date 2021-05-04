@@ -5,6 +5,7 @@ namespace onlive_core.Entities
     public class Context
     {
         public Users user { get; set; }
+		public Sessions session { get; set; }
         public string lang { get; set; }
     }
 }

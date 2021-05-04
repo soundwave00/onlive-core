@@ -46,11 +46,11 @@ namespace onlive_core.DataAccess
 			}
         }
 
-        public Sessions openSession(string username, string codiceToken)
+        public Sessions openSession(string username, string codToken)
         {
 			Sessions session = new Sessions();
 			session.Username = username;
-			session.CodiceToken = codiceToken;
+			session.CodToken = codToken;
 			session.DateStart = DateTime.Now;
 			session.DateExp = DateTime.Now.AddDays(7);
 
@@ -61,6 +61,21 @@ namespace onlive_core.DataAccess
 			}
 
 			return session;
+		}
+
+        public Sessions getSession(Sessions session)
+        {
+			Sessions response = new Sessions();
+
+			using (var context = new onliveContext())
+			{
+				response = context.Sessions
+					.Where(x => x.CodToken == session.CodToken)
+					.Where(x => x.Username == session.Username)
+					.FirstOrDefault();
+			}
+
+			return response;
 		}
 
 		#endregion

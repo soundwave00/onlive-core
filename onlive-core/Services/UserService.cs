@@ -18,7 +18,7 @@ namespace onlive_core.Services
     {
         #region Metodi pubblici
 
-        public LoginResponse login(Users req)
+        public LoginResponse login(UserRequest req)
         {
 			UserDataAccess userDataAccess = new UserDataAccess();
 
@@ -29,7 +29,7 @@ namespace onlive_core.Services
 
 			try
 			{
-				user = userDataAccess.getUser(req.Username);
+				user = userDataAccess.getUser(req.user.Username);
 			}
 			catch (Exception exc)
             {
@@ -40,7 +40,7 @@ namespace onlive_core.Services
 				throw new Exception("Username does not exist");
 
 			string salt = user.Salt;
-			string hashSource = req.Password + salt;
+			string hashSource = req.user.Password + salt;
 
 			if(!verifyHash(hashSource, user.Password)){
 				throw new Exception("Login failed");
@@ -49,7 +49,7 @@ namespace onlive_core.Services
 				
 				try
 				{
-					session = userDataAccess.openSession(req.Username, codiceToken);
+					session = userDataAccess.openSession(req.user.Username, codiceToken);
 				}
 				catch (Exception exc)
 				{
@@ -57,26 +57,22 @@ namespace onlive_core.Services
 				}
 			}
 
-			user.Salt = null;
-			user.Password = null;
-
-			loginResponse.body.user = user;
-			loginResponse.body.session = session;
+			loginResponse.session = session;
 
 			return loginResponse;
         }
 
-		public void signup(Users req)
+		public void signup(UserRequest req)
         {
 			UserDataAccess userDataAccess = new UserDataAccess();
 
 			Users user = new Users();
 
-			validationSignupRequest(req);
+			//validationSignupRequest(req.user);
 
 			try
 			{
-				user = userDataAccess.getUser(req.Username);
+				user = userDataAccess.getUser(req.user.Username);
 			}
 			catch (Exception exc)
             {
@@ -87,28 +83,78 @@ namespace onlive_core.Services
 				throw new Exception("Username already exist");
 
 			string salt = createSalt(16);
-			string hashSource = req.Password + salt;
+			string hashSource = req.user.Password + salt;
 			
-			req.DateCreate = DateTime.Now;
-			req.IsActive = true;
-			req.Salt = salt;
-			req.Password = getHash(hashSource);
+			req.user.DateCreate = DateTime.Now;
+			req.user.IsActive = true;
+			req.user.Salt = salt;
+			req.user.Password = getHash(hashSource);
 
 			try
 			{
-				userDataAccess.signup(req);
+				userDataAccess.signup(req.user);
 			}
 			catch (Exception exc)
             {
                 throw new Exception("Error creating user");
             }
         }
+
+		public GetUserResponse getUser(Request req)
+        {
+			UserDataAccess userDataAccess = new UserDataAccess();
+
+			GetUserResponse getUserResponse = new GetUserResponse();
+
+			Users user = new Users();
+
+			checkCodToken(req.ctx);
+
+			try
+			{
+				user = userDataAccess.getUser(req.ctx.session.Username);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting user");
+            }
+
+			user.Salt = null;
+			user.Password = null;
+
+			getUserResponse.user = user;
+
+			return getUserResponse;
+        }
+
+		public void checkCodToken(Context ctx)
+		{
+			UserDataAccess userDataAccess = new UserDataAccess();
+
+			Sessions session = new Sessions();
+
+			try
+			{
+				session = userDataAccess.getSession(ctx.session);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting token");
+            }
+
+			if( session == null )
+                throw new Exception("Token not found");
+
+			if( session.DateExp.CompareTo(DateTime.Now) < 0 )
+                throw new Exception("Token expired");
+			
+		}
 		
 		#endregion
 
 		#region private Method
 
-		private static string createSalt(int length)
+		private string createSalt(int length)
 		{
 			Random random = new Random();
 			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -120,7 +166,7 @@ namespace onlive_core.Services
 			);
 		}
 
-		private static string getHash(string input)
+		private string getHash(string input)
 		{
 			// Create a new Stringbuilder to collect the bytes
 			// and create a string.
@@ -143,7 +189,7 @@ namespace onlive_core.Services
 			return sBuilder.ToString();
 		}
 
-		private static bool verifyHash(string input, string hash)
+		private bool verifyHash(string input, string hash)
 		{
 			// Create a StringComparer an compare the hashes.
 			StringComparer comparer = StringComparer.OrdinalIgnoreCase;
@@ -154,12 +200,14 @@ namespace onlive_core.Services
 			return comparer.Compare(hashOfInput, hash) == 0;
 		}
 
+		/*
+
 		private Boolean checkSpecialChar(string value)
 		{
 			var regexItem = new Regex("^[a-zA-Z0-9]*$");
 
 			// se IsMatch = true vuol dire che ci sono solo caratteri indicati nella Regex
-			if(regexItem.IsMatch(value)) 
+			if(regexItem.IsMatch(value))
 				return false;
 			
 			return true;
@@ -194,6 +242,8 @@ namespace onlive_core.Services
 			if (string.IsNullOrEmpty(req.Email))
 				throw new Exception("Email is null or empty");
 		}
+
+		*/
 
 		#endregion
     }

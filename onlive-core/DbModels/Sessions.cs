@@ -11,7 +11,7 @@ namespace onlive_core.DbModels
     {
         public int Id { get; set; }
         public string Username { get; set; }
-        public string CodiceToken { get; set; }
+        public string CodToken { get; set; }
 		public DateTime DateStart { get; set; }
 		public DateTime DateExp { get; set; }
 

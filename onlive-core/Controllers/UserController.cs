@@ -40,7 +40,7 @@ namespace onlive_core.Controllers
             try
 			{
 				UserService userService = new UserService();
-				response = userService.login(req.user);
+				response = userService.login(req);
 			}
             catch (Exception exc)
             {
@@ -61,7 +61,28 @@ namespace onlive_core.Controllers
             try
 			{
 				UserService userService = new UserService();
-				userService.signup(req.user);
+				userService.signup(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rMessage = exc.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("getUser")]
+		public GetUserResponse getUser([FromBody]UserRequest req)
+        {
+			GetUserResponse response = new GetUserResponse();
+
+            try
+			{
+				UserService userService = new UserService();
+				response = userService.getUser(req);
 			}
             catch (Exception exc)
             {

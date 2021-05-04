@@ -103,9 +103,9 @@ namespace onlive_core.DbModels
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
-                entity.Property(e => e.CodiceToken)
+                entity.Property(e => e.CodToken)
                     .IsRequired()
-                    .HasColumnName("CODICE_TOKEN")
+                    .HasColumnName("COD_TOKEN")
                     .HasMaxLength(16);
 
                 entity.Property(e => e.Username)
