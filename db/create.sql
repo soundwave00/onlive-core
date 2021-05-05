@@ -47,6 +47,8 @@ CREATE TABLE onlive.USERS (
 	
 	PRIMARY KEY (USERNAME)
 );
+INSERT INTO onlive.USERS VALUES ('riddorck', 'Salvatore', 'Anchora', '2b9acadb24425e8a110d30a264b77a960f1a686385ea5d223bfb630f953f7da7', 'U44C8NGVMPVJPNFW', 'riddorck@gmail.com', 1, NOW(), NULL);
+INSERT INTO onlive.USERS VALUES ('soundwave', 'Andrea', 'Cagnetta', '8106501d5d4e071fb1b247e6e513e2b424d4dfc28ef9e8b06c23865a59be76e2', '3XRDV5FVEHQE27L1', 'soundwave9595@gmail.com', 1, NOW(), NULL);
 
 CREATE TABLE onlive.SESSIONS (
 	ID int AUTO_INCREMENT,

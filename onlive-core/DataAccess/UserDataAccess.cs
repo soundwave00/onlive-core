@@ -26,9 +26,10 @@ namespace onlive_core.DataAccess
 						Username = d.Username,
 						Name = d.Name,
 						Surname = d.Surname,
-						Email = d.Email,
 						Password = d.Password,
-						Salt = d.Salt
+						Salt = d.Salt,
+						Email = d.Email,
+						IsActive = d.IsActive
 					})
 					.Where(x => x.Username == username)
 					.Where(x => x.IsActive == true)
