@@ -11,7 +11,11 @@ namespace onlive_core.DbModels
     {
         public Users()
         {
+            FavoritesGroups = new HashSet<FavoritesGroups>();
+            GroupsMembers = new HashSet<GroupsMembers>();
             Sessions = new HashSet<Sessions>();
+            UsersGenres = new HashSet<UsersGenres>();
+            UsersMusicRoles = new HashSet<UsersMusicRoles>();
         }
 
         public string Username { get; set; }
@@ -24,6 +28,10 @@ namespace onlive_core.DbModels
 		public DateTime DateCreate { get; set; }
 		public DateTime? DateDelete { get; set; }
 
+        public virtual ICollection<FavoritesGroups> FavoritesGroups { get; set; }
+        public virtual ICollection<GroupsMembers> GroupsMembers { get; set; }
         public virtual ICollection<Sessions> Sessions { get; set; }
+        public virtual ICollection<UsersGenres> UsersGenres { get; set; }
+        public virtual ICollection<UsersMusicRoles> UsersMusicRoles { get; set; }
     }
 }

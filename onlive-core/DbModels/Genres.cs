@@ -7,24 +7,20 @@ using System.Collections.Generic;
 
 namespace onlive_core.DbModels
 {
-    public partial class Events
+    public partial class Genres
     {
-        public Events()
+        public Genres()
         {
             EventsGenres = new HashSet<EventsGenres>();
+            GroupsGenres = new HashSet<GroupsGenres>();
+            UsersGenres = new HashSet<UsersGenres>();
         }
 
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public int? Pid { get; set; }
-        public int? Port { get; set; }
-        public bool Running { get; set; }
-		public DateTime DateSet { get; set; }
-		public DateTime? DateStart { get; set; }
-		public DateTime? DateStop { get; set; }
+        public string Genre { get; set; }
 
-        public virtual Jports PortNavigation { get; set; }
         public virtual ICollection<EventsGenres> EventsGenres { get; set; }
+        public virtual ICollection<GroupsGenres> GroupsGenres { get; set; }
+        public virtual ICollection<UsersGenres> UsersGenres { get; set; }
     }
 }
