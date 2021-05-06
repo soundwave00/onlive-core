@@ -18,7 +18,7 @@ namespace onlive_core.DataAccess
         {
 			Users user = new Users();
 
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				user = context.Users
 					.Select(d => new Users
@@ -41,7 +41,7 @@ namespace onlive_core.DataAccess
 
 		public void signup(Users req)
         {
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				context.Users.Add(req);
 				context.SaveChanges();
@@ -56,7 +56,7 @@ namespace onlive_core.DataAccess
 			session.DateStart = DateTime.Now;
 			session.DateExp = DateTime.Now.AddDays(7);
 
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				context.Sessions.Add(session);
 				context.SaveChanges();
@@ -69,7 +69,7 @@ namespace onlive_core.DataAccess
         {
 			Sessions response = new Sessions();
 
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				response = context.Sessions
 					.Where(x => x.CodToken == session.CodToken)

@@ -8,13 +8,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace onlive_core.DbModels
 {
-    public partial class onliveContext : DbContext
+    public partial class ONSTAGEContext : DbContext
     {
-        public onliveContext()
+        public ONSTAGEContext()
         {
         }
 
-        public onliveContext(DbContextOptions<onliveContext> options)
+        public ONSTAGEContext(DbContextOptions<ONSTAGEContext> options)
             : base(options)
         {
         }
@@ -39,7 +39,7 @@ namespace onlive_core.DbModels
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL("SERVER=localhost;DATABASE=onlive;UID=root;PASSWORD=root;");
+                optionsBuilder.UseMySQL("SERVER=localhost;DATABASE=ONSTAGE;UID=root;PASSWORD=root;");
             }
         }
 

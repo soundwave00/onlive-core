@@ -32,7 +32,7 @@ Database
 
 ##### Info
 - Server: localhost
-- Database: onlive
+- Database: ONSTAGE
 - Uid: root
 - Password: root
 

@@ -64,7 +64,7 @@ namespace onlive_core.DataAccess
         {
 			Events eventItem = new Events();
 
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				eventItem = context.Events
 					.Where(x => x.Id == eventId)
@@ -133,7 +133,7 @@ namespace onlive_core.DataAccess
         {
 			Events insEvent = new Events();
 
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				insEvent.Name = eventItem.Name;
 				insEvent.Description = eventItem.Description;
@@ -150,7 +150,7 @@ namespace onlive_core.DataAccess
         {
 			int port = -1;
 
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				Jports jports = context.Jports
 					.Where(x => x.Running == false)
@@ -167,7 +167,7 @@ namespace onlive_core.DataAccess
 
         public void freePort(int eventId)
         {
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				Events eventItem = context.Events
 					.Where(x => x.Id == eventId)
@@ -184,7 +184,7 @@ namespace onlive_core.DataAccess
 
         public void setPort(int eventId, int port)
         {
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				Events updevent = context.Events
 					.Where(x => x.Id == eventId)
@@ -197,7 +197,7 @@ namespace onlive_core.DataAccess
 
         public void setStartEvent(int eventId, int pid)
         {
-			using (var context = new onliveContext())
+			using (var context = new ONSTAGEContext())
 			{
 				Events updEvent = context.Events
 					.Where(x => x.Id == eventId)
