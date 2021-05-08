@@ -74,8 +74,29 @@ namespace onlive_core.Controllers
 
         [HttpPost]
         [HttpOptions]
+        [Route("logout")]
+        public Response logout([FromBody]Request req)
+        {
+			Response response = new Response();
+
+            try
+			{
+				UserService userService = new UserService();
+				userService.logout(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rMessage = exc.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [HttpOptions]
         [Route("getUser")]
-		public GetUserResponse getUser([FromBody]UserRequest req)
+		public GetUserResponse getUser([FromBody]Request req)
         {
 			GetUserResponse response = new GetUserResponse();
 

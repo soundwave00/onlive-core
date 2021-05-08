@@ -65,6 +65,20 @@ namespace onlive_core.DataAccess
 			return session;
 		}
 
+        public void closeSession(string username, string codToken)
+        {
+			using (var context = new ONSTAGEContext())
+			{
+				Sessions session = context.Sessions
+					.Where(x => x.Username == username)
+					.Where(x => x.CodToken == codToken)
+					.FirstOrDefault();
+
+				context.Sessions.Remove(session);
+				context.SaveChanges();
+			}
+		}
+
         public Sessions getSession(Sessions session)
         {
 			Sessions response = new Sessions();

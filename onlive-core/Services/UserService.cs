@@ -100,6 +100,22 @@ namespace onlive_core.Services
             }
         }
 
+		public void logout(Request req)
+        {
+			UserDataAccess userDataAccess = new UserDataAccess();
+
+			checkCodToken(req.ctx);
+
+			try
+			{
+				userDataAccess.closeSession(req.ctx.session.Username, req.ctx.session.CodToken);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error closing session");
+            }
+        }
+
 		public GetUserResponse getUser(Request req)
         {
 			UserDataAccess userDataAccess = new UserDataAccess();
