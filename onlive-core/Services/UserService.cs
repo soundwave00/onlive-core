@@ -70,6 +70,9 @@ namespace onlive_core.Services
 
 			//validationSignupRequest(req.user);
 
+			if (!checkSpecialChar(req.user.Password))
+				throw new Exception("Password is not complex enough");
+
 			try
 			{
 				user = userDataAccess.getUser(req.user.Username);
@@ -187,70 +190,53 @@ namespace onlive_core.Services
 
 		private string getHash(string input)
 		{
-			// Create a new Stringbuilder to collect the bytes
-			// and create a string.
 			StringBuilder sBuilder = new StringBuilder();
 
 			using (SHA256 sha256Hash = SHA256.Create())
             {
-				// Convert the input string to a byte array and compute the hash.
 				byte[] data = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-				// Loop through each byte of the hashed data
-				// and format each one as a hexadecimal string.
 				for (int i = 0; i < data.Length; i++)
 				{
 					sBuilder.Append(data[i].ToString("x2"));
 				}
 			}
 			
-			// Return the hexadecimal string.
 			return sBuilder.ToString();
 		}
 
 		private bool verifyHash(string input, string hash)
 		{
-			// Create a StringComparer an compare the hashes.
 			StringComparer comparer = StringComparer.OrdinalIgnoreCase;
 
-			// Hash the input.
 			var hashOfInput = getHash(input);
 
 			return comparer.Compare(hashOfInput, hash) == 0;
 		}
 
-		/*
-
 		private Boolean checkSpecialChar(string value)
 		{
-			var regexItem = new Regex("^[a-zA-Z0-9]*$");
+			var regexItem = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,}");
 
-			// se IsMatch = true vuol dire che ci sono solo caratteri indicati nella Regex
+			// Se IsMatch == true allora la stringa contiene tutti i caratteri richiesti: [a-z][A-Z][0-9][caratteri speciali]
 			if(regexItem.IsMatch(value))
-				return false;
+				return true;
 			
-			return true;
+			return false;
 		}
+
+		/*
 
 		private void validationSignupRequest(Users req)
 		{
 			if (string.IsNullOrEmpty(req.Username))
 				throw new Exception("Username is null or empty");
-			
-			if (checkSpecialChar(req.Username))
-				throw new Exception("Username cannot contain special characters");
 
 			if (string.IsNullOrEmpty(req.Name))
 				throw new Exception("Name is null or empty");
-
-			if (checkSpecialChar(req.Name))
-				throw new Exception("Name cannot contain special characters");
 			
 			if (string.IsNullOrEmpty(req.Surname))
 				throw new Exception("Surname is null or empty");
-			
-			if (checkSpecialChar(req.Surname))
-				throw new Exception("Surname cannot contain special characters");
 			
 			if (string.IsNullOrEmpty(req.Password))
 				throw new Exception("Password is null or empty");
