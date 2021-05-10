@@ -17,6 +17,7 @@ namespace onlive_core.DbModels
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int IdGroups { get; set; }
         public int? Pid { get; set; }
         public int? Port { get; set; }
         public bool Running { get; set; }
@@ -24,6 +25,7 @@ namespace onlive_core.DbModels
 		public DateTime? DateStart { get; set; }
 		public DateTime? DateStop { get; set; }
 
+        public virtual Groups IdGroupsNavigation { get; set; }
         public virtual Jports PortNavigation { get; set; }
         public virtual ICollection<EventsGenres> EventsGenres { get; set; }
     }

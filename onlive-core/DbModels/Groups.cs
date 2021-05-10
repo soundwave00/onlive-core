@@ -11,6 +11,7 @@ namespace onlive_core.DbModels
     {
         public Groups()
         {
+            Events = new HashSet<Events>();
             FavoritesGroups = new HashSet<FavoritesGroups>();
             GroupsGenres = new HashSet<GroupsGenres>();
             GroupsMembers = new HashSet<GroupsMembers>();
@@ -20,6 +21,7 @@ namespace onlive_core.DbModels
         public string Name { get; set; }
         public string Description { get; set; }
 
+        public virtual ICollection<Events> Events { get; set; }
         public virtual ICollection<FavoritesGroups> FavoritesGroups { get; set; }
         public virtual ICollection<GroupsGenres> GroupsGenres { get; set; }
         public virtual ICollection<GroupsMembers> GroupsMembers { get; set; }

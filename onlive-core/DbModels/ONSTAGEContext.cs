@@ -49,24 +49,39 @@ namespace onlive_core.DbModels
             {
                 entity.ToTable("EVENTS");
 
+                entity.HasIndex(e => e.IdGroups)
+                    .HasName("FK_GROUPS_EVENTS");
+
                 entity.HasIndex(e => e.Port)
                     .HasName("FK_JPORTS_EVENTS");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnName("DESCRIPTION")
                     .HasMaxLength(128);
 
+                entity.Property(e => e.IdGroups)
+                    .HasColumnName("ID_GROUPS")
+                    .HasColumnType("int(11)");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("NAME")
                     .HasMaxLength(64);
 
-                entity.Property(e => e.Pid).HasColumnName("PID");
+                entity.Property(e => e.Pid)
+                    .HasColumnName("PID")
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'NULL'");
 
-                entity.Property(e => e.Port).HasColumnName("PORT");
+                entity.Property(e => e.Port)
+                    .HasColumnName("PORT")
+                    .HasColumnType("int(11)")
+                    .HasDefaultValueSql("'NULL'");
 
                 entity.Property(e => e.Running)
                     .HasColumnName("RUNNING")
@@ -85,6 +100,12 @@ namespace onlive_core.DbModels
 					.HasColumnName("DATE_STOP")
 					.HasColumnType("datetime");
 
+                entity.HasOne(d => d.IdGroupsNavigation)
+                    .WithMany(p => p.Events)
+                    .HasForeignKey(d => d.IdGroups)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_GROUPS_EVENTS");
+
                 entity.HasOne(d => d.PortNavigation)
                     .WithMany(p => p.Events)
                     .HasForeignKey(d => d.Port)
@@ -101,9 +122,13 @@ namespace onlive_core.DbModels
                 entity.HasIndex(e => e.IdEvents)
                     .HasName("FK_EVENTS_EVENTS_GENRES");
 
-                entity.Property(e => e.IdGenres).HasColumnName("ID_GENRES");
+                entity.Property(e => e.IdGenres)
+                    .HasColumnName("ID_GENRES")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.IdEvents).HasColumnName("ID_EVENTS");
+                entity.Property(e => e.IdEvents)
+                    .HasColumnName("ID_EVENTS")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.IdEventsNavigation)
                     .WithMany(p => p.EventsGenres)
@@ -132,7 +157,9 @@ namespace onlive_core.DbModels
                     .HasColumnName("USERNAME")
                     .HasMaxLength(16);
 
-                entity.Property(e => e.IdGroups).HasColumnName("ID_GROUPS");
+                entity.Property(e => e.IdGroups)
+                    .HasColumnName("ID_GROUPS")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.IdGroupsNavigation)
                     .WithMany(p => p.FavoritesGroups)
@@ -151,7 +178,9 @@ namespace onlive_core.DbModels
             {
                 entity.ToTable("GENRES");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Genre)
                     .IsRequired()
@@ -163,7 +192,9 @@ namespace onlive_core.DbModels
             {
                 entity.ToTable("GROUPS");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Description)
                     .IsRequired()
@@ -186,9 +217,13 @@ namespace onlive_core.DbModels
                 entity.HasIndex(e => e.IdGenres)
                     .HasName("FK_GENRES_GROUPS_GENRES");
 
-                entity.Property(e => e.IdGroups).HasColumnName("ID_GROUPS");
+                entity.Property(e => e.IdGroups)
+                    .HasColumnName("ID_GROUPS")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.IdGenres).HasColumnName("ID_GENRES");
+                entity.Property(e => e.IdGenres)
+                    .HasColumnName("ID_GENRES")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.IdGenresNavigation)
                     .WithMany(p => p.GroupsGenres)
@@ -217,7 +252,9 @@ namespace onlive_core.DbModels
                     .HasColumnName("USERNAME")
                     .HasMaxLength(16);
 
-                entity.Property(e => e.IdGroups).HasColumnName("ID_GROUPS");
+                entity.Property(e => e.IdGroups)
+                    .HasColumnName("ID_GROUPS")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.IdGroupsNavigation)
                     .WithMany(p => p.GroupsMembers)
@@ -246,9 +283,13 @@ namespace onlive_core.DbModels
                     .HasColumnName("USERNAME")
                     .HasMaxLength(16);
 
-                entity.Property(e => e.IdGroupsMembers).HasColumnName("ID_GROUPS_MEMBERS");
+                entity.Property(e => e.IdGroupsMembers)
+                    .HasColumnName("ID_GROUPS_MEMBERS")
+                    .HasColumnType("int(11)");
 
-                entity.Property(e => e.IdGroupsRoles).HasColumnName("ID_GROUPS_ROLES");
+                entity.Property(e => e.IdGroupsRoles)
+                    .HasColumnName("ID_GROUPS_ROLES")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.IdGroupsRolesNavigation)
                     .WithMany(p => p.GroupsMembersGroupsRoles)
@@ -267,7 +308,9 @@ namespace onlive_core.DbModels
             {
                 entity.ToTable("GROUPS_ROLES");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Roles)
                     .IsRequired()
@@ -282,7 +325,9 @@ namespace onlive_core.DbModels
 
                 entity.ToTable("JPORTS");
 
-                entity.Property(e => e.Port).HasColumnName("PORT");
+                entity.Property(e => e.Port)
+                    .HasColumnName("PORT")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Running)
                     .HasColumnName("RUNNING")
@@ -293,7 +338,9 @@ namespace onlive_core.DbModels
             {
                 entity.ToTable("MUSIC_ROLES");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.Instrument)
                     .IsRequired()
@@ -308,7 +355,9 @@ namespace onlive_core.DbModels
                 entity.HasIndex(e => e.Username)
                     .HasName("FK_USERS_SESSIONS");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id)
+                    .HasColumnName("ID")
+                    .HasColumnType("int(11)");
 
                 entity.Property(e => e.CodToken)
                     .IsRequired()
@@ -401,7 +450,9 @@ namespace onlive_core.DbModels
                     .HasColumnName("USERNAME")
                     .HasMaxLength(16);
 
-                entity.Property(e => e.IdGenres).HasColumnName("ID_GENRES");
+                entity.Property(e => e.IdGenres)
+                    .HasColumnName("ID_GENRES")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.IdGenresNavigation)
                     .WithMany(p => p.UsersGenres)
@@ -430,7 +481,9 @@ namespace onlive_core.DbModels
                     .HasColumnName("USERNAME")
                     .HasMaxLength(16);
 
-                entity.Property(e => e.IdMusicRoles).HasColumnName("ID_MUSIC_ROLES");
+                entity.Property(e => e.IdMusicRoles)
+                    .HasColumnName("ID_MUSIC_ROLES")
+                    .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.IdMusicRolesNavigation)
                     .WithMany(p => p.UsersMusicRoles)
