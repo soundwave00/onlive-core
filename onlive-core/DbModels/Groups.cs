@@ -20,6 +20,7 @@ namespace onlive_core.DbModels
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string Avatar { get; set; }
 
         public virtual ICollection<Events> Events { get; set; }
         public virtual ICollection<FavoritesGroups> FavoritesGroups { get; set; }

@@ -23,21 +23,6 @@ namespace onlive_core.DataAccess
 				eventItem = context.Events
 					.Where(x => x.Id == id)
 					.FirstOrDefault();
-				
-				var group = context.Groups
-					.Join(
-						context.Events,
-						group => group.Id,
-						eventItem => eventItem.IdGroups, 
-						(group,eventItem) => new
-						{	
-							idEvent = eventItem.Id,
-							nameEvent = eventItem.Name,
-							nameGroup = group.Name
-						}
-					)
-					.Where (x => x.idEvent == id)
-					.FirstOrDefault();
 			}
 
 			return eventItem;

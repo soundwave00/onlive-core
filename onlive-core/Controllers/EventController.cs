@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 using onlive_core.Services;
-using onlive_core.DbModels;
-using onlive_core.Entities;
 using onlive_core.Models;
 
 namespace onlive_core.Controllers
@@ -15,13 +13,13 @@ namespace onlive_core.Controllers
     {
 		#region Proprietà
 
-        private readonly ILogger<UserController> _logger;
+        private readonly ILogger<EventController> _logger;
         
 		#endregion
 				
 		#region Costruttori
 
-        public EventController(ILogger<UserController> logger)
+        public EventController(ILogger<EventController> logger)
         {
         	_logger = logger;
         }

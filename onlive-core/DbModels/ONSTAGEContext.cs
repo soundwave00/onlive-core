@@ -196,6 +196,11 @@ namespace onlive_core.DbModels
                     .HasColumnName("ID")
                     .HasColumnType("int(11)");
 
+                entity.Property(e => e.Avatar)
+                    .HasColumnName("AVATAR")
+                    .HasMaxLength(64)
+                    .HasDefaultValueSql("'NULL'");
+
                 entity.Property(e => e.Description)
                     .IsRequired()
                     .HasColumnName("DESCRIPTION")
