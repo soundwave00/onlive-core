@@ -33,7 +33,7 @@ namespace onlive_core.Controllers
         [HttpPost]
         [HttpOptions]
         [Route("login")]
-        public LoginResponse login([FromBody]UserRequest req)
+        public LoginResponse login([FromBody]LoginRequest req)
         {
 			LoginResponse response = new LoginResponse();
 
@@ -54,7 +54,7 @@ namespace onlive_core.Controllers
         [HttpPost]
         [HttpOptions]
         [Route("signup")]
-		public Response signup([FromBody]UserRequest req)
+		public Response signup([FromBody]SignupRequest req)
         {
 			Response response = new Response();
 

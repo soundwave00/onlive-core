@@ -14,13 +14,13 @@ namespace onlive_core.DataAccess
     {
         #region Metodi
 
-        public Users getUser(string username)
+        public Users getUser(string username="", string email="")
         {
 			Users user = new Users();
 
 			using (var context = new ONSTAGEContext())
 			{
-				user = context.Users
+				IQueryable<Users> userTmp = context.Users
 					.Select(d => new Users
 					{
 						Username = d.Username,
@@ -31,9 +31,22 @@ namespace onlive_core.DataAccess
 						Email = d.Email,
 						IsActive = d.IsActive
 					})
-					.Where(x => x.Username == username)
-					.Where(x => x.IsActive == true)
-					.FirstOrDefault();
+					.Where(x => x.IsActive == true);
+
+				if (!String.IsNullOrEmpty(username)) {
+					userTmp = userTmp
+						.Where(x => x.Username == username);
+				}
+
+				if (!String.IsNullOrEmpty(email)) {
+					userTmp = userTmp
+						.Where(x => x.Email == email);
+				}
+
+				if (!String.IsNullOrEmpty(username) || !String.IsNullOrEmpty(email)) {
+					user = userTmp
+						.FirstOrDefault();
+				}
 			}
 
 			return user;

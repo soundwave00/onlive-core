@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using System.Net.Mail;
 
 using onlive_core.DataAccess;
 using onlive_core.DbModels;
@@ -18,7 +19,7 @@ namespace onlive_core.Services
     {
         #region Metodi pubblici
 
-        public LoginResponse login(UserRequest req)
+        public LoginResponse login(LoginRequest req)
         {
 			UserDataAccess userDataAccess = new UserDataAccess();
 
@@ -27,13 +28,16 @@ namespace onlive_core.Services
 			Users user = new Users();
 			Sessions session = new Sessions();
 
+			req.user.Email = req.user.Email.ToLower();
+			req.user.Username = req.user.Username.ToLower();
+
 			try
 			{
-				user = userDataAccess.getUser(req.user.Username);
+				user = userDataAccess.getUser(req.user.Username, req.user.Email);
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting user");
+                throw new Exception("Error getting user", exc);
             }
 
 			if (user == null)
@@ -49,11 +53,11 @@ namespace onlive_core.Services
 				
 				try
 				{
-					session = userDataAccess.openSession(req.user.Username, codiceToken);
+					session = userDataAccess.openSession(user.Username, codiceToken);
 				}
 				catch (Exception exc)
 				{
-					throw new Exception("Error opening session");
+					throw new Exception("Error opening session", exc);
 				}
 			}
 
@@ -62,28 +66,19 @@ namespace onlive_core.Services
 			return loginResponse;
         }
 
-		public void signup(UserRequest req)
+		public void signup(SignupRequest req)
         {
 			UserDataAccess userDataAccess = new UserDataAccess();
 
 			Users user = new Users();
 
-			//validationSignupRequest(req.user);
+			validationSignupRequest(req.user);
 
 			if (!checkSpecialChar(req.user.Password))
 				throw new Exception("Password is not complex enough");
 
-			try
-			{
-				user = userDataAccess.getUser(req.user.Username);
-			}
-			catch (Exception exc)
-            {
-                throw new Exception("Error getting user");
-            }
-			
-			if (user != null)
-				throw new Exception("Username already exist");
+			req.user.Email = req.user.Email.ToLower();
+			req.user.Username = req.user.Username.ToLower();
 
 			string salt = createSalt(16);
 			string hashSource = req.user.Password + salt;
@@ -99,7 +94,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error creating user");
+                throw new Exception("Error creating user", exc);
             }
         }
 
@@ -107,7 +102,7 @@ namespace onlive_core.Services
         {
 			UserDataAccess userDataAccess = new UserDataAccess();
 
-			checkCodToken(req.ctx);
+			Session.checkCodToken(req.ctx);
 
 			try
 			{
@@ -115,7 +110,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error closing session");
+                throw new Exception("Error closing session", exc);
             }
         }
 
@@ -127,7 +122,7 @@ namespace onlive_core.Services
 
 			Users user = new Users();
 
-			checkCodToken(req.ctx);
+			Session.checkCodToken(req.ctx);
 
 			try
 			{
@@ -135,7 +130,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting user");
+                throw new Exception("Error getting user", exc);
             }
 			
 			if (user == null)
@@ -148,29 +143,6 @@ namespace onlive_core.Services
 
 			return getUserResponse;
         }
-
-		public void checkCodToken(Context ctx)
-		{
-			UserDataAccess userDataAccess = new UserDataAccess();
-
-			Sessions session = new Sessions();
-
-			try
-			{
-				session = userDataAccess.getSession(ctx.session);
-			}
-			catch (Exception exc)
-            {
-                throw new Exception("Error getting token");
-            }
-
-			if( session == null )
-                throw new Exception("Token not found");
-
-			if( session.DateExp.CompareTo(DateTime.Now) < 0 )
-                throw new Exception("Token expired");
-			
-		}
 		
 		#endregion
 
@@ -216,21 +188,30 @@ namespace onlive_core.Services
 
 		private Boolean checkSpecialChar(string value)
 		{
-			var regexItem = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,}");
+			var regexItem = new Regex("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9 ])[^\\s]{8,}$");
 
-			// Se IsMatch == true allora la stringa contiene tutti i caratteri richiesti: [a-z][A-Z][0-9][caratteri speciali]
+			// Se IsMatch == true allora la stringa è lunga almeno 8 e contiene tutti i caratteri richiesti tranne gli spazi:
+			// [a-z][A-Z][0-9][caratteri speciali]
+
 			if(regexItem.IsMatch(value))
 				return true;
 			
 			return false;
 		}
-
-		/*
-
+		
 		private void validationSignupRequest(Users req)
 		{
 			if (string.IsNullOrEmpty(req.Username))
 				throw new Exception("Username is null or empty");
+
+			if (string.IsNullOrEmpty(req.Email))
+				throw new Exception("Email is null or empty");
+
+			try {
+				req.Email = new MailAddress(req.Email).Address;
+			} catch(FormatException) {
+				throw new Exception("Email is invalid");
+			}
 
 			if (string.IsNullOrEmpty(req.Name))
 				throw new Exception("Name is null or empty");
@@ -244,11 +225,7 @@ namespace onlive_core.Services
 			if (req.Password.Length < 8)
 				throw new Exception("Password must be at least 8 characters long");
 			
-			if (string.IsNullOrEmpty(req.Email))
-				throw new Exception("Email is null or empty");
 		}
-
-		*/
 
 		#endregion
     }
