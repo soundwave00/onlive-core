@@ -16,36 +16,37 @@ namespace onlive_core.DataAccess
 
         public Users getUser(string username="", string email="")
         {
-			Users user = new Users();
+			Users user = null;
+			IQueryable<Users> userTmp;
 
 			using (var context = new ONSTAGEContext())
 			{
-				IQueryable<Users> userTmp = context.Users
-					.Select(d => new Users
-					{
-						Username = d.Username,
-						Name = d.Name,
-						Surname = d.Surname,
-						Password = d.Password,
-						Salt = d.Salt,
-						Email = d.Email,
-						IsActive = d.IsActive
-					})
-					.Where(x => x.IsActive == true);
-
-				if (!String.IsNullOrEmpty(username)) {
-					userTmp = userTmp
-						.Where(x => x.Username == username);
-				}
-
-				if (!String.IsNullOrEmpty(email)) {
-					userTmp = userTmp
-						.Where(x => x.Email == email);
-				}
-
+				
 				if (!String.IsNullOrEmpty(username) || !String.IsNullOrEmpty(email)) {
-					user = userTmp
-						.FirstOrDefault();
+					userTmp = context.Users
+						.Select(d => new Users
+						{
+							Username = d.Username,
+							Name = d.Name,
+							Surname = d.Surname,
+							Password = d.Password,
+							Salt = d.Salt,
+							Email = d.Email,
+							IsActive = d.IsActive
+						})
+						.Where(x => x.IsActive == true);
+
+					if (!String.IsNullOrEmpty(username)) {
+						user = userTmp
+							.Where(x => x.Username == username)
+							.FirstOrDefault();
+					}
+					
+					if (!String.IsNullOrEmpty(email) && user == null ) {
+						user = userTmp
+							.Where(x => x.Email == email)
+							.FirstOrDefault();
+					}
 				}
 			}
 

@@ -41,7 +41,7 @@ namespace onlive_core.Services
             }
 
 			if (user == null)
-				throw new Exception("Username does not exist");
+				throw new Exception("Username or email does not exist");
 
 			string salt = user.Salt;
 			string hashSource = req.user.Password + salt;
