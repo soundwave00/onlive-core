@@ -81,6 +81,8 @@ namespace onlive_core.Controllers
 
             try
 			{
+				Session.checkCodToken(req.ctx);
+
 				UserService userService = new UserService();
 				userService.logout(req);
 			}
@@ -102,6 +104,8 @@ namespace onlive_core.Controllers
 
             try
 			{
+				Session.checkCodToken(req.ctx);
+				
 				UserService userService = new UserService();
 				response = userService.getUser(req);
 			}

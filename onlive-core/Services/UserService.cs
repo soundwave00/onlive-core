@@ -102,8 +102,6 @@ namespace onlive_core.Services
         {
 			UserDataAccess userDataAccess = new UserDataAccess();
 
-			Session.checkCodToken(req.ctx);
-
 			try
 			{
 				userDataAccess.closeSession(req.ctx.session.Username, req.ctx.session.CodToken);
@@ -121,8 +119,6 @@ namespace onlive_core.Services
 			GetUserResponse getUserResponse = new GetUserResponse();
 
 			Users user = new Users();
-
-			Session.checkCodToken(req.ctx);
 
 			try
 			{
