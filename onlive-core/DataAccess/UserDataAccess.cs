@@ -32,7 +32,8 @@ namespace onlive_core.DataAccess
 							Password = d.Password,
 							Salt = d.Salt,
 							Email = d.Email,
-							IsActive = d.IsActive
+							IsActive = d.IsActive,
+							Avatar = d.Avatar
 						})
 						.Where(x => x.IsActive == true);
 

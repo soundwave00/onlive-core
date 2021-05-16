@@ -367,6 +367,10 @@ namespace onlive_core.DbModels
                     .HasColumnName("USERNAME")
                     .HasMaxLength(16);
 
+                entity.Property(e => e.Avatar)
+                    .HasColumnName("AVATAR")
+                    .HasMaxLength(64);
+
                 entity.Property(e => e.Email)
                     .IsRequired()
                     .HasColumnName("EMAIL")

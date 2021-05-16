@@ -25,6 +25,7 @@ namespace onlive_core.DbModels
         public string Password { get; set; }
         public string Salt { get; set; }
         public bool IsActive { get; set; }
+        public string Avatar { get; set; }
 		public DateTime DateCreate { get; set; }
 		public DateTime? DateDelete { get; set; }
 
