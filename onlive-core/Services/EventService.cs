@@ -3,6 +3,7 @@ using onlive_core.DataAccess;
 using onlive_core.DbModels;
 using onlive_core.Entities;
 using onlive_core.Models;
+using System.Collections.Generic;
 
 namespace onlive_core.Services
 {
@@ -31,6 +32,30 @@ namespace onlive_core.Services
 			getEventResponse.eventItem = eventItem;
 
 			return getEventResponse;
+        }
+
+		public GetEventsResponse getEvents(GetEventsRequest req)
+        {
+			GetEventsResponse getEventsResponse = new GetEventsResponse();
+
+			List<Events> eventsList = new List<Events>();
+
+			try
+			{
+				EventDataAccess eventDataAccess = new EventDataAccess();
+				eventsList = eventDataAccess.getEvents(req.dateFrom);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting event");
+            }
+			
+			if (eventsList == null)
+				throw new Exception("Event does not exist");
+
+			getEventsResponse.eventsList = eventsList;
+
+			return getEventsResponse;
         }
 
 		#endregion

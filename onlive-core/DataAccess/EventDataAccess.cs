@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Data;
-using MySql.Data.MySqlClient;
 
-using onlive_core.Db;
 using onlive_core.DbModels;
 
 namespace onlive_core.DataAccess
@@ -26,6 +23,22 @@ namespace onlive_core.DataAccess
 			}
 
 			return eventItem;
+        }
+
+		public List<Events> getEvents(DateTime dateFrom)
+        {
+			List<Events> eventsList = new List<Events>();
+			//Groups group = new Groups();
+
+			using (var context = new ONSTAGEContext())
+			{
+				eventsList = context.Events
+					.Where(x => x.DateStart >= dateFrom)
+					.Where(x => x.DateStart <= dateFrom.AddMonths(1))
+					.ToList();
+			}
+
+			return eventsList;
         }
 
 		#endregion
