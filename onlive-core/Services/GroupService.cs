@@ -21,7 +21,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting group");
+                throw new Exception("Error getting group", exc.InnerException);
             }
 			
 			if (group == null)

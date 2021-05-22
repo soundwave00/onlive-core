@@ -12,6 +12,7 @@ namespace onlive_core.DataAccess
 {
     public class HomeDataAccess
     {
+		/*
 		#region Proprietà
 
         public IDatabase Db { get; set; }
@@ -57,9 +58,24 @@ namespace onlive_core.DataAccess
         }
 
         #endregion
+		*/
 
         #region Metodi
 
+		public List<Genres> getGenres()
+        {
+			List<Genres> genres = new List<Genres>();
+
+			using (var context = new ONSTAGEContext())
+			{
+				genres = context.Genres
+					.ToList();
+			}
+
+			return genres;
+        }
+
+		/*
         public Events getEventById(int eventId)
         {
 			Events eventItem = new Events();
@@ -227,7 +243,7 @@ namespace onlive_core.DataAccess
 				command.CommandText = commandText;
 				
 				DatabaseConfig databaseConfig = new DatabaseConfig();
-				databaseConfig.AddParameterToCommand(command, "@ID", MySqlDbType.Int32, eventId);
+				databaseConfig.AddParameter(command, "@ID", MySqlDbType.Int32, eventId);
 
 				Db.ExecuteNonQuery(command);
             }
@@ -240,6 +256,7 @@ namespace onlive_core.DataAccess
                 ReleseDB();
             }
 		}
+		*/
 		
 		#endregion
     }

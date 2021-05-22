@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 
 using onlive_core.DataAccess;
 using onlive_core.DbModels;
+using onlive_core.Models;
 using onlive_core.Entities;
 
 namespace onlive_core.Services
@@ -13,13 +14,31 @@ namespace onlive_core.Services
     public class HomeService
     {
         #region Metodi pubblici
+		public GetGenresResponse getGenres(Request req)
+        {
+			GetGenresResponse getGenresResponse = new GetGenresResponse();
 
+			List<Genres> genres = new List<Genres>();
+
+			try
+			{
+				HomeDataAccess homeDataAccess = new HomeDataAccess();
+				genres = homeDataAccess.getGenres();
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting genres", exc.InnerException);
+            }
+
+			getGenresResponse.genres = genres;
+
+			return getGenresResponse;
+        }
+
+		/*
         public Response startEvent(Events req, string bash = null)
         {
 			Response response = new Response();
-
-			//CHECK SESSION(?)
-			/* */
 
 			HomeDataAccess homeDataAccess = new HomeDataAccess();
 
@@ -82,9 +101,11 @@ namespace onlive_core.Services
 
             return response;
 		}
+		*/
 
 		#endregion
 
+		/*
 		#region Metodi privati
 
         public int setPort(int eventId)
@@ -137,5 +158,6 @@ namespace onlive_core.Services
 		}
 		
 		#endregion
+		*/
     }
 }

@@ -37,13 +37,16 @@ namespace onlive_core.Controllers
 
             try
 			{
+				Session.checkCodToken(req.ctx);
+				
 				EventService eventService = new EventService();
 				response = eventService.getEvent(req);
 			}
             catch (Exception exc)
             {
                 response.rCode = -1;
-				response.rMessage = exc.Message;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
             }
 
             return response;
@@ -64,7 +67,8 @@ namespace onlive_core.Controllers
             catch (Exception exc)
             {
                 response.rCode = -1;
-				response.rMessage = exc.Message;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
             }
 
             return response;

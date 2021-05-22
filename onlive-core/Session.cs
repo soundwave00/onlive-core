@@ -28,7 +28,7 @@ namespace onlive_core
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting token", exc);
+                throw new Exception("Error getting token", exc.InnerException);
             }
 
 			if( session == null )

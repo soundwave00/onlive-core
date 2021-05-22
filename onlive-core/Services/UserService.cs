@@ -37,7 +37,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting user", exc);
+                throw new Exception("Error getting user", exc.InnerException);
             }
 
 			if (user == null)
@@ -57,7 +57,7 @@ namespace onlive_core.Services
 				}
 				catch (Exception exc)
 				{
-					throw new Exception("Error opening session", exc);
+					throw new Exception("Error opening session", exc.InnerException);
 				}
 			}
 
@@ -90,11 +90,11 @@ namespace onlive_core.Services
 
 			try
 			{
-				userDataAccess.signup(req.user);
+				userDataAccess.signup(req.user, req.userGenres);
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error creating user", exc);
+                throw new Exception("Error creating user", exc.InnerException);
             }
         }
 
@@ -108,7 +108,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error closing session", exc);
+                throw new Exception("Error closing session", exc.InnerException);
             }
         }
 
@@ -126,7 +126,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting user", exc);
+                throw new Exception("Error getting user", exc.InnerException);
             }
 			
 			if (user == null)
@@ -164,9 +164,9 @@ namespace onlive_core.Services
             {
 				byte[] data = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
 
-				for (int i = 0; i < data.Length; i++)
+				foreach (byte dataItem in data)
 				{
-					sBuilder.Append(data[i].ToString("x2"));
+					sBuilder.Append(dataItem.ToString("x2"));
 				}
 			}
 			

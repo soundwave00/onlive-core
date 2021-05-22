@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 
 using onlive_core.Services;
 using onlive_core.DbModels;
+using onlive_core.Models;
 using onlive_core.Entities;
 
 namespace onlive_core.Controllers
@@ -29,6 +30,29 @@ namespace onlive_core.Controllers
 
         #region Metodi
 
+        [HttpPost]
+        [HttpOptions]
+        [Route("getGenres")]
+		public GetGenresResponse getGenres([FromBody]Request req)
+        {
+			GetGenresResponse response = new GetGenresResponse();
+
+            try
+			{				
+				HomeService homeService = new HomeService();
+				response = homeService.getGenres(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
+            }
+
+            return response;
+        }
+
+		/*
         [HttpPost]
         [HttpOptions]
         [Route("startEvent")]
@@ -89,6 +113,7 @@ namespace onlive_core.Controllers
 
             return response;
 		}
+		*/
 		
 		#endregion
     }

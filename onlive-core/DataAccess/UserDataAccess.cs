@@ -12,6 +12,48 @@ namespace onlive_core.DataAccess
 {
     public class UserDataAccess
     {
+		#region Proprietà
+
+        public IDatabase Db { get; set; }
+        
+		#endregion
+
+		#region SQL Command Source
+		
+		private const String setUsersGenres = @"
+			INSERT INTO {0}USERS_GENRES
+			SELECT
+				@USERNAME AS USERNAME
+				,ID AS ID_GENRES
+			FROM {0}GENRES
+			WHERE
+				ID IN (@ID_GENRES)
+		";
+
+		#endregion
+
+		#region DB
+
+        private void InitDB()
+        {
+            if (Db == null)
+            {
+				Db = new IDatabase();
+                Db.Open();
+            }
+        }
+
+        private void ReleseDB()
+        {
+            if (Db != null)
+            {
+                Db.Close();
+                Db = null;
+            }
+        }
+
+        #endregion
+
         #region Metodi
 
         public Users getUser(string username="", string email="")
@@ -54,13 +96,42 @@ namespace onlive_core.DataAccess
 			return user;
         }
 
-		public void signup(Users req)
+		public void signup(Users user, List<int> genres)
         {
 			using (var context = new ONSTAGEContext())
 			{
-				context.Users.Add(req);
+				context.Users.Add(user);
 				context.SaveChanges();
 			}
+
+			try
+			{
+            	MySqlCommand command = new MySqlCommand();
+
+                InitDB();
+                
+				StringBuilder sb = new StringBuilder();
+				sb.AppendFormat(setUsersGenres, Db.DbConfig.ConnectionPrefix);
+
+				String commandText = sb.ToString();
+				command.CommandType = System.Data.CommandType.Text;
+				command.CommandText = commandText;
+				
+				DatabaseConfig databaseConfig = new DatabaseConfig();
+
+				databaseConfig.AddParameter(command, "@USERNAME", MySqlDbType.VarChar, user.Username);
+				databaseConfig.AddArrayParameters(command, "@ID_GENRES", MySqlDbType.Int16, genres);
+
+				Db.ExecuteNonQuery(command);
+            }
+            catch (Exception exc)
+            {
+				throw new Exception(exc.Message, exc);
+            }
+            finally
+            {
+                ReleseDB();
+            }
         }
 
         public Sessions openSession(string username, string codToken)

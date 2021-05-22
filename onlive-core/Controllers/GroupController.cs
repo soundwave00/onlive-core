@@ -37,13 +37,16 @@ namespace onlive_core.Controllers
 
             try
 			{
+				Session.checkCodToken(req.ctx);
+				
 				GroupService groupService = new GroupService();
 				response = groupService.getGroup(req);
 			}
             catch (Exception exc)
             {
                 response.rCode = -1;
-				response.rMessage = exc.Message;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
             }
 
             return response;

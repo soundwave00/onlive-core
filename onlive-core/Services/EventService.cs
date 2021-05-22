@@ -23,7 +23,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting event");
+                throw new Exception("Error getting event", exc.InnerException);
             }
 			
 			if (eventItem == null)
@@ -47,7 +47,7 @@ namespace onlive_core.Services
 			}
 			catch (Exception exc)
             {
-                throw new Exception("Error getting event");
+                throw new Exception("Error getting event", exc.InnerException);
             }
 			
 			if (eventsList == null)
