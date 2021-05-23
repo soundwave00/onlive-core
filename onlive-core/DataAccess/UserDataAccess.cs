@@ -56,6 +56,21 @@ namespace onlive_core.DataAccess
 
         #region Metodi
 
+		public List<int> getUserGenres(Users user)
+        {
+			List<int> userGenres = new List<int>();
+
+			using (var context = new ONSTAGEContext())
+			{
+				userGenres = context.UsersGenres
+					.Where(x => x.Username == user.Username)
+					.Select(x => x.IdGenres)
+					.ToList();
+			}
+
+			return userGenres;
+        }
+
         public Users getUser(string username="", string email="")
         {
 			Users user = null;

@@ -19,11 +19,28 @@ namespace onlive_core.Services
 			GetGenresResponse getGenresResponse = new GetGenresResponse();
 
 			List<Genres> genres = new List<Genres>();
+			List<int> userGenres = new List<int>();
 
 			try
 			{
 				HomeDataAccess homeDataAccess = new HomeDataAccess();
 				genres = homeDataAccess.getGenres();
+
+				if( req.ctx.user != null ){
+					UserDataAccess userDataAccess = new UserDataAccess();
+					Sessions session = new Sessions();
+
+					try
+					{
+						session = userDataAccess.getSession(req.ctx.session);
+					}
+					catch (Exception exc) { }
+
+
+					if( session != null && !(session.DateExp.CompareTo(DateTime.Now) < 0) ) {
+						userGenres = userDataAccess.getUserGenres(req.ctx.user);
+					}
+				}
 			}
 			catch (Exception exc)
             {
@@ -31,6 +48,7 @@ namespace onlive_core.Services
             }
 
 			getGenresResponse.genres = genres;
+			getGenresResponse.userGenres = userGenres;
 
 			return getGenresResponse;
         }

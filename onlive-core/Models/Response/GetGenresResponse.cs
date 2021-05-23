@@ -8,5 +8,6 @@ namespace onlive_core.Models
     public class GetGenresResponse: Response
     {
 		  public List<Genres> genres { get; set; }
+		  public List<int> userGenres { get; set; }
     }
 }
