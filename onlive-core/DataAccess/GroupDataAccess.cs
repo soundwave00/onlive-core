@@ -42,6 +42,20 @@ namespace onlive_core.DataAccess
 			return group;
         }
 
+		public Groups getMyGroup(int groupId)
+        {
+			Groups group = new Groups();
+
+			using (var context = new ONSTAGEContext())
+			{
+				group = context.Groups
+					.Where(x => x.Id == groupId)
+					.FirstOrDefault();
+			}
+
+			return group;
+        }
+
 		#endregion
     }
 }
