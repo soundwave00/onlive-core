@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Data;
+using System.Collections.Generic;
 
 using onlive_core.DbModels;
 
@@ -54,6 +55,21 @@ namespace onlive_core.DataAccess
 			}
 
 			return group;
+        }
+
+		public List<int> getUserGroup(Users user)
+        {
+			List<int> userGroup = new List<int>();
+
+			using (var context = new ONSTAGEContext())
+			{
+				userGroup = context.GroupsMembers
+					.Where(x => x.Username == user.Username)
+					.Select(x => x.IdGroups)
+					.ToList();
+			}
+
+			return userGroup;
         }
 
 		#endregion
