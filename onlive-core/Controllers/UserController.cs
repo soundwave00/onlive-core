@@ -121,6 +121,30 @@ namespace onlive_core.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("getAllUsers")]
+		public GetUserResponse getAllUsers([FromBody]Request req)
+        {
+			GetUserResponse response = new GetUserResponse();
+
+            try
+			{
+				Session.checkCodToken(req.ctx);
+				
+				UserService userService = new UserService();
+				response = userService.getAllUsers(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
+            }
+
+            return response;
+        }
 		
 		#endregion
     }

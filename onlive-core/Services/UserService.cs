@@ -139,6 +139,31 @@ namespace onlive_core.Services
 
 			return getUserResponse;
         }
+
+		public GetUserResponse getAllUsers(Request req)
+        {
+			UserDataAccess userDataAccess = new UserDataAccess();
+
+			GetUserResponse getUserResponse = new GetUserResponse();
+
+			List<Users> user = new List<Users>();
+
+			try
+			{
+				user = userDataAccess.getAllUsers();
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting user", exc.InnerException);
+            }
+			
+			if (user == null)
+				throw new Exception("Username does not exist");
+
+			getUserResponse.allUser = user;
+
+			return getUserResponse;
+        }
 		
 		#endregion
 

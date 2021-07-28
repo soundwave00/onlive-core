@@ -111,6 +111,19 @@ namespace onlive_core.DataAccess
 			return user;
         }
 
+		public List<Users> getAllUsers()
+        {
+			List<Users> allUser = new List<Users>();
+
+			using (var context = new ONSTAGEContext())
+			{
+				allUser = context.Users
+					.ToList();
+			}
+
+			return allUser;
+        }
+
 		public void signup(Users user, List<int> genres)
         {
 			using (var context = new ONSTAGEContext())
