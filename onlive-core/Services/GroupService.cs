@@ -82,6 +82,30 @@ namespace onlive_core.Services
 			return getGroupResponse;
         }
 
+		public GetGroupResponse getMembersGroup(GetMyGroupRequest req)
+        {
+			GetGroupResponse getGroupResponse = new GetGroupResponse();
+
+			//Groups group = new Groups();
+			List<GroupsMembers> members = new List<GroupsMembers>();
+
+			try
+			{
+				GroupDataAccess groupDataAccess = new GroupDataAccess();
+				members = groupDataAccess.getMembersGroup(req.groupId);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting group", exc.InnerException);
+            }
+			
+			if (getGroupResponse == null)
+				throw new Exception("Group does not exist");
+
+			getGroupResponse.membersGroup = members;
+
+			return getGroupResponse;
+        }
 
 		#endregion
     }

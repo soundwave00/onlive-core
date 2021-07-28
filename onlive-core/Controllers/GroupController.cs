@@ -99,6 +99,30 @@ namespace onlive_core.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("getMembersGroup")]
+		public GetGroupResponse getMembersGroup([FromBody]GetMyGroupRequest req)
+        {
+			GetGroupResponse response = new GetGroupResponse();
+
+            try
+			{
+				Session.checkCodToken(req.ctx);
+				
+				GroupService groupService = new GroupService();
+				response = groupService.getMembersGroup(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
+            }
+
+            return response;
+        }
 		
 		#endregion
     }

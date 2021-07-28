@@ -8,5 +8,6 @@ namespace onlive_core.Models
     {
 		  public Groups group { get; set; }
           public List<int> userGroup { get; set; }
+          public List<GroupsMembers> membersGroup{ get; set; }
     }
 }

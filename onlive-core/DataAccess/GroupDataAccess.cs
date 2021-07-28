@@ -72,6 +72,22 @@ namespace onlive_core.DataAccess
 			return userGroup;
         }
 
+		public List<GroupsMembers> getMembersGroup(int groupId)
+        {
+			List<GroupsMembers> userMembersList = new List<GroupsMembers>();
+
+			using (var context = new ONSTAGEContext())
+			{
+				userMembersList = context.GroupsMembers
+					.Where(x => x.IdGroups == groupId)
+					.Select(x => x)
+					.ToList();
+			}
+
+
+			return userMembersList;
+        }
+
 		#endregion
     }
 }
