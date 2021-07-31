@@ -88,6 +88,35 @@ namespace onlive_core.DataAccess
 			return userMembersList;
         }
 
+		public List<Genres> getGroupGenres(int groupId)
+        {
+			List<Genres> genres = new List<Genres>();
+			
+			
+			using (ONSTAGEContext context = new ONSTAGEContext())
+			{
+				var genre = (from gg in context.GroupsGenres
+								join g in context.Genres
+								on gg.IdGenres equals g.Id
+								where gg.IdGroups == groupId
+								select new {
+									Id = g.Id,
+									Genre = g.Genre
+								}).ToList();
+
+				foreach (var g in genre)
+				{	
+					Genres genreItem = new Genres();
+					genreItem.Id = g.Id;
+					genreItem.Genre = g.Genre;
+					genres.Add(genreItem);
+				}
+
+			}
+
+			return genres;
+        }
+
 		#endregion
     }
 }

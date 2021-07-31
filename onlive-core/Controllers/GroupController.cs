@@ -123,6 +123,28 @@ namespace onlive_core.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("getGroupGenres")]
+		public GetGenresResponse getGroupGenres([FromBody]GetMyGroupRequest req)
+        {
+			GetGenresResponse response = new GetGenresResponse();
+
+            try
+			{				
+				GroupService groupService = new GroupService();
+				response = groupService.getGroupGenres(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
+            }
+
+            return response;
+        }
 		
 		#endregion
     }

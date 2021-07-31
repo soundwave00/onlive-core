@@ -107,6 +107,27 @@ namespace onlive_core.Services
 			return getGroupResponse;
         }
 
+		public GetGenresResponse getGroupGenres(GetMyGroupRequest req)
+        {
+			GetGenresResponse getGenresResponse = new GetGenresResponse();
+
+			List<Genres> genres = new List<Genres>();
+
+			try
+			{
+				GroupDataAccess groupDataAccess = new GroupDataAccess();
+				genres = groupDataAccess.getGroupGenres(req.groupId);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting genres", exc.InnerException);
+            }
+
+			getGenresResponse.genres = genres;
+
+			return getGenresResponse;
+        }
+
 		#endregion
     }
 }
