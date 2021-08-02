@@ -165,6 +165,21 @@ namespace onlive_core.DataAccess
 			return eventsList;
         }
 
+		public List<Events> getGroupEvents(int groupId)
+        {
+			List<Events> eventsList = new List<Events>();
+
+			using (var context = new ONSTAGEContext())
+			{
+				eventsList = context.Events
+					.Where(x => x.IdGroups == groupId)
+					.Select(x => x)
+					.ToList();
+			}
+
+			return eventsList;
+        }
+
 		#endregion
     }
 }

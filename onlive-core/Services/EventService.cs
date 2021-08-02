@@ -58,6 +58,30 @@ namespace onlive_core.Services
 			return getEventsResponse;
         }
 
+		public GetEventsResponse getGroupEvents(GetEventsRequest req)
+        {
+			GetEventsResponse getEventsResponse = new GetEventsResponse();
+
+			List<Events> eventsList = new List<Events>();
+
+			try
+			{
+				EventDataAccess eventDataAccess = new EventDataAccess();
+				eventsList = eventDataAccess.getGroupEvents(req.groupId);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting event", exc.InnerException);
+            }
+			
+			if (eventsList == null)
+				throw new Exception("Event does not exist");
+
+			getEventsResponse.eventsList = eventsList;
+
+			return getEventsResponse;
+        }
+
 		#endregion
     }
 }

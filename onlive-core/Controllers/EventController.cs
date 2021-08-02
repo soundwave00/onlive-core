@@ -73,6 +73,28 @@ namespace onlive_core.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("getGroupEvents")]
+		public GetEventsResponse getGroupEvents([FromBody]GetEventsRequest req)
+        {
+			GetEventsResponse response = new GetEventsResponse();
+
+            try
+			{
+				EventService eventsService = new EventService();
+				response = eventsService.getGroupEvents(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
+            }
+
+            return response;
+        }
 		
 		#endregion
     }

@@ -11,6 +11,7 @@ namespace onlive_core.Models
     {
         //public List<Genres> genres { get; set; }
         public DateTime dateFrom { get; set; }
+        public int groupId { get; set; }
         //public DateTime dateTo { get; set; }
     }
 }
