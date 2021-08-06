@@ -168,11 +168,13 @@ namespace onlive_core.DataAccess
 		public List<Events> getGroupEvents(int groupId)
         {
 			List<Events> eventsList = new List<Events>();
+			DateTime localDate = DateTime.Now;
 
 			using (var context = new ONSTAGEContext())
 			{
 				eventsList = context.Events
 					.Where(x => x.IdGroups == groupId)
+					.Where(x => x.DateSet >= localDate)
 					.Select(x => x)
 					.ToList();
 			}

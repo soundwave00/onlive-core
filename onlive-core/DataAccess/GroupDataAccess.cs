@@ -117,6 +117,29 @@ namespace onlive_core.DataAccess
 			return genres;
         }
 
+		public void createGroup(Groups group, List<string> groupComponents)
+        {
+			Groups groupItem = new Groups();
+			
+			groupItem = group;
+
+			using (var context = new ONSTAGEContext())
+			{
+				context.Groups.Add(groupItem);
+				context.SaveChanges();
+				int id = groupItem.Id;
+
+				foreach(var comp in groupComponents){
+					GroupsMembers components = new GroupsMembers();
+					components.Username = comp;
+					components.IdGroups = id;
+					context.GroupsMembers.Add(components);
+					context.SaveChanges(); 
+				}
+			}
+
+        }
+
 		#endregion
     }
 }

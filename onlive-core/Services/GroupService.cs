@@ -127,6 +127,19 @@ namespace onlive_core.Services
 
 			return getGenresResponse;
         }
+		public void createGroup(GetGroupRequest req)
+        {
+			GroupDataAccess groupDataAccess = new GroupDataAccess();
+
+			try
+			{
+				groupDataAccess.createGroup(req.Groups, req.groupComponents);
+			}
+			catch (Exception exc)
+            {
+                throw new Exception("Error getting genres", exc.InnerException);
+            }
+		}
 
 		#endregion
     }
