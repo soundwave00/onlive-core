@@ -20,7 +20,7 @@ Jamulus Server
 
 ##### Avvio
 - Entrare nella cartella jamulus
-- ./Jamulus -s -n -F -T --streamto "-f mp3 icecast://source:root@localhost:80/stream"
+- ./Jamulus -s -n -F -T --streamto "-f mp3 icecast://source:root@localhost:8000/stream"
 	- Nel comando precedente sostituire root con il valore di source-password in /etc/icecast2/icecast.xml
 - Verificare processi jamulus aperti con: ps aux | grep jamulus
 
