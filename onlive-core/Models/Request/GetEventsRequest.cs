@@ -9,9 +9,10 @@ namespace onlive_core.Models
 {
     public class GetEventsRequest: Request
     {
-        //public List<Genres> genres { get; set; }
+        public List<int> genres { get; set; }
         public DateTime dateFrom { get; set; }
         public int groupId { get; set; }
+        public Events events { get; set; }
         //public DateTime dateTo { get; set; }
     }
 }

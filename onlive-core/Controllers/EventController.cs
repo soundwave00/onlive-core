@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 
 using onlive_core.Services;
 using onlive_core.Models;
+using onlive_core.Entities;
+using onlive_core.DbModels;
 
 namespace onlive_core.Controllers
 {
@@ -95,6 +97,69 @@ namespace onlive_core.Controllers
 
             return response;
         }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("createEvent")]
+		public GetEventsResponse createEvent([FromBody]GetEventsRequest req)
+        {
+			GetEventsResponse response = new GetEventsResponse();
+
+            try
+			{
+				EventService eventsService = new EventService();
+				eventsService.createEvent(req);
+			}
+            catch (Exception exc)
+            {
+                response.rCode = -1;
+				response.rTitle = exc.Message;
+				response.rMessage = exc.InnerException.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("startEvent")]
+        public Response startEvent([FromBody]GetEventRequest req)
+        {
+			Response response = new Response();
+
+            try
+			{
+				EventService eventService = new EventService();
+				//response = HomeService.startEvent(req);
+				response = eventService.startEvent(req, "vlc");
+			}
+            catch (Exception exc)
+            {
+				response.rMessage = exc.Message;
+            }
+
+            return response;
+        }
+
+        [HttpPost]
+        [HttpOptions]
+        [Route("stopEvent")]
+        public Response stopEvent([FromBody]GetEventRequest req)
+        {
+			Response response = new Response();
+
+            try
+			{
+				EventService eventService = new EventService();
+				response = eventService.stopEvent(req);
+			}
+            catch (Exception exc)
+            {
+				response.rMessage = exc.Message;
+            }
+
+            return response;
+		}
 		
 		#endregion
     }

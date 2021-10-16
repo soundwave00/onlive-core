@@ -31,6 +31,14 @@ namespace onlive_core.DataAccess
 			AND E.DATE_SET >= NOW() AND E.DATE_SET <= NOW() + INTERVAL 1 MONTH
 		";
 
+		private const String setStopEventQuery = @"
+			UPDATE {0}EVENTS
+			SET
+				RUNNING = 0,
+				DATE_STOP = NOW()
+			WHERE ID = @ID
+		";
+
 		#endregion
 
 		#region DB
@@ -181,6 +189,125 @@ namespace onlive_core.DataAccess
 
 			return eventsList;
         }
+
+		public void createEvent(Events events, List<int> genres)
+        {
+			Events eventsItem = new Events();
+			
+			eventsItem = events;
+
+			using (var context = new ONSTAGEContext())
+			{
+				context.Events.Add(eventsItem);
+				context.SaveChanges();
+				int id = eventsItem.Id;
+
+				foreach(var gen in genres){
+					EventsGenres genre = new EventsGenres();
+					genre.IdGenres = gen;
+					genre.IdEvents = id;
+					context.EventsGenres.Add(genre);
+					context.SaveChanges(); 
+				}
+			}
+
+        }
+
+		public int calculatePort()
+        {
+			int port = -1;
+
+			using (var context = new ONSTAGEContext())
+			{
+				Jports jports = context.Jports
+					.Where(x => x.Running == false)
+					.FirstOrDefault();
+
+				jports.Running = true;
+				context.SaveChanges();
+
+				port = jports.Port;
+			}
+
+			return port;
+        }
+
+		public void setPort(int eventId, int port)
+        {
+			using (var context = new ONSTAGEContext())
+			{
+				Events updevent = context.Events
+					.Where(x => x.Id == eventId)
+					.FirstOrDefault();
+
+				updevent.Port = port;
+				context.SaveChanges();
+			}
+        }
+
+		public void freePort(int eventId)
+        {
+			using (var context = new ONSTAGEContext())
+			{
+				Events eventItem = context.Events
+					.Where(x => x.Id == eventId)
+					.FirstOrDefault();
+
+				Jports jports = context.Jports
+					.Where(x => x.Port == eventItem.Port)
+					.FirstOrDefault();
+
+				jports.Running = false;
+				context.SaveChanges();
+			}
+        }
+		
+        public void setStartEvent(int eventId, int pid)
+        {
+			using (var context = new ONSTAGEContext())
+			{
+				Events updEvent = context.Events
+					.Where(x => x.Id == eventId)
+					.FirstOrDefault();
+				
+				updEvent.Pid = pid;
+				updEvent.DateStart = DateTime.Now;
+				updEvent.Running = true;
+
+				context.SaveChanges();
+			}
+        }
+
+		public void setStopEvent(int eventId)
+        {
+			try
+			{
+            	MySqlCommand command = new MySqlCommand();
+
+                InitDB();
+                
+				StringBuilder sb = new StringBuilder();
+				sb.AppendFormat(setStopEventQuery, Db.DbConfig.ConnectionPrefix);
+
+				String commandText = sb.ToString();
+				command.CommandType = System.Data.CommandType.Text;
+				command.CommandText = commandText;
+				
+				DatabaseConfig databaseConfig = new DatabaseConfig();
+				databaseConfig.AddParameter(command, "@ID", MySqlDbType.Int32, eventId);
+
+				Db.ExecuteNonQuery(command);
+            }
+            catch (Exception exc)
+            {
+				throw new Exception(exc.Message, exc);
+            }
+            finally
+            {
+                ReleseDB();
+            }
+		}
+
 
 		#endregion
     }
