@@ -143,13 +143,15 @@ namespace onlive_core.Services
 
 		public int startHomeProcess(int port, string bash)
 		{
-			string command = "/home/riddorck/sviluppi/jamulus/Jamulus -s -n -F -T --streamto {PORT} '-f mp3 icecast://source:root@localhost:80/stream'";
+			string command = "/home/soundwave/jamulus/Jamulus -s -n -F -T {PORT} --streamto '-f mp3 icecast://source:Tesisoundwave00@localhost:8000/{PORT2}'";
 			if (!string.IsNullOrEmpty(bash))
 				command = bash;
 
 			string strPort = port > 0 ? new String("-p " + port.ToString()) : "";
 			command = command.Replace("{PORT}", strPort);
 
+			command = command.Replace("{PORT2}", "22125");
+			
             command = "-c \"" + command + " & echo $!\"";
 
 			Process process = new Process();

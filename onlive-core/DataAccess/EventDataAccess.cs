@@ -23,13 +23,18 @@ namespace onlive_core.DataAccess
 		private const String getRunningEventsQuery = @"
 			SELECT E.*
 			FROM {0}EVENTS E
-			JOIN {0}EVENTS_GENRES EG
-			ON E.ID = EG.ID_EVENTS
-			JOIN {0}GENRES G 
-			ON EG.ID_GENRES = G.ID
-			WHERE G.ID IN (6,2)
-			AND E.DATE_SET >= NOW() AND E.DATE_SET <= NOW() + INTERVAL 1 MONTH
+			WHERE E.DATE_SET >= NOW() AND E.DATE_SET <= NOW() + INTERVAL 1 MONTH
 		";
+
+		// private const String getRunningEventsQuery = @"
+		// SELECT E.*
+		// FROM {0}EVENTS E
+		// JOIN {0}EVENTS_GENRES EG
+		// ON E.ID = EG.ID_EVENTS
+		// JOIN {0}GENRES G 
+		// ON EG.ID_GENRES = G.ID
+		// WHERE E.DATE_SET >= NOW() AND E.DATE_SET <= NOW() + INTERVAL 1 MONTH
+		// ";
 
 		private const String setStopEventQuery = @"
 			UPDATE {0}EVENTS

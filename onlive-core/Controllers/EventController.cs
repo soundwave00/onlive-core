@@ -131,7 +131,7 @@ namespace onlive_core.Controllers
 			{
 				EventService eventService = new EventService();
 				//response = HomeService.startEvent(req);
-				response = eventService.startEvent(req, "vlc");
+				response = eventService.startEvent(req);
 			}
             catch (Exception exc)
             {

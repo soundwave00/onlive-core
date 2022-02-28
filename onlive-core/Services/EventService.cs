@@ -98,14 +98,14 @@ namespace onlive_core.Services
             }
 		}
 
-		public Response startEvent(GetEventRequest req, string bash = null)
+		public Response startEvent(GetEventRequest req)
         {
 			Response response = new Response();
 
 			EventDataAccess eventDataAccess = new EventDataAccess();
 			
 			int port = setPort(req.id);
-			int pid = startHomeProcess(port, bash);
+			int pid = startHomeProcess(port);
 			
 			eventDataAccess.setStartEvent(req.id, pid);
 
@@ -154,7 +154,7 @@ namespace onlive_core.Services
 			return port;
 		}
 
-		public int startHomeProcess(int port, string bash)
+		public int startHomeProcess(int port)
 		{
 			string command = "/home/soundwave/jamulus/Jamulus -s -n -F -T {PORT} --streamto '-f mp3 icecast://source:Tesisoundwave00@localhost:8000/{PORT2}'";
 			/* if (!string.IsNullOrEmpty(bash))
